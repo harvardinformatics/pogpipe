@@ -6,12 +6,14 @@ from   datamodel.AnalysisRunner          import AnalysisRunner
 from   datamodel.FastQCAnalysis          import FastQCAnalysis
 from   datamodel.factory.AnalysisFactory import AnalysisFactory
 
+from   config                            import settings
+
 class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.TestCase as arg - 
 
     
     def setUp(self):
 
-        self.input_files = ["testdata/FoxP2_SL167.fastq"]
+        self.input_files = ["../testdata/FoxP2_SL167.fastq"]
         self.input_types = ['fastq']
 
     def testRun(self):
@@ -24,6 +26,8 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
         self.assertTrue(len(self.input_types) == 1)
 
         cmds = self.ana.getCommands()
+
+        print cmds
 
         self.assertTrue(len(cmds) == 1)
 

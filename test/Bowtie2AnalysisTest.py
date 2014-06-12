@@ -10,9 +10,9 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
     
     def setUp(self):
 
-        self.input_files = ["testdata/FoxP2_SL167.fastq"]
+        self.input_files = ["../testdata/FoxP2_SL167.fastq"]
         self.input_types = ['fastq']
-        self.param       = " -x testdata/databases/Arabidopsis_TAIR.9.171 "
+        self.param       = " -x ../testdata/databases/Arabidopsis_TAIR.9.171 "
 
     def testRun(self):
 
@@ -27,9 +27,7 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
         cmds = self.ana.getCommands()
 
-        print cmds
-
-        self.assertTrue(len(cmds) == 3)
+        self.assertTrue(len(cmds) == 2)
 
         runner = AnalysisRunner(self.ana)
 
@@ -41,7 +39,11 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
         output_str = self.ana.output_str
 
-        self.assertTrue(len(output_str) == 2)
+        print len(output_str)
+
+        self.assertTrue(len(output_str) == 1)
+
+        print self.ana.summary_data
 
         self.assertTrue(self.ana.summary_data['Number_of_Reads'] == '3')
         self.assertTrue(self.ana.summary_data['Aligned 0 Times'] == '3')

@@ -12,8 +12,10 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
     def setUp(self):
 
         self.factory = AnalysisFactory()
-        self.ana     = self.factory.createAnalysisFromModuleName("FastQC")
-        self.ana.setInputFiles(["testdata/FoxP2_SL167.fastq"],['fastq'])
+        self.ana     = self.factory.createAnalysisFromModuleName("Bowtie2")
+        self.ana.param   = " -x ../testdata/databases/Arabidopsis_TAIR.9.171 "
+
+        self.ana.setInputFiles(["../testdata/FoxP2_SL167.fastq"],['fastq'])
 
     def testCreateNewAnalysisRunner(self):           # Function gets called automatically
 
@@ -42,7 +44,10 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
         out = anarun.analysis.output_files
 
-        self.assertTrue(len(out) == 11)
+        print out
+        print anarun.analysis.summary_data
+
+        self.assertTrue(len(out) == 2)
 
 if __name__ == "__main__":                           # And run the file
     unittest.main()   
