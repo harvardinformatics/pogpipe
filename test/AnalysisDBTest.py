@@ -17,7 +17,7 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
     def setUp(self):
         self.ana    = AnalysisFactory.createAnalysisFromModuleName("FastQC")
 
-        self.ana.setInputFiles(["testdata/FoxP2_SL167.fastq"],['fastq'])
+        self.ana.setInputFiles(["../testdata/FoxP2_SL167.fastq"],['fastq'])
 
         print "Input %s" % self.ana.input_files
 

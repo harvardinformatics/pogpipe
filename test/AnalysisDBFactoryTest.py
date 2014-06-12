@@ -18,7 +18,7 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
         self.ana_fact = AnalysisFactory()
         self.anaobj   = self.ana_fact.createAnalysisFromModuleName("FastQC")
 
-        self.anaobj.setInputFiles(["testdata/FoxP2_SL167.fastq"],['fastq'])
+        self.anaobj.setInputFiles(["../testdata/FoxP2_SL167.fastq"],['fastq'])
 
     def testCreateObject(self):
         """ Test we can create a new AnalysisDBFactory object """
@@ -38,8 +38,7 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
         self.dbobj.createAnalysisTables()
         rows = self.dbobj.getTables()
-
-        self.assertTrue(len(rows) == 7)
+        self.assertTrue(len(rows) == 9)
 
     def testAddAnalysisToDB(self):
 
