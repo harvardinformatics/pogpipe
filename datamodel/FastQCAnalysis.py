@@ -140,7 +140,9 @@ class FastQCAnalysis(Analysis):
         """
 
         file = os.path.join(self.output_dir,self.fastqc_dir)
+        print "File %s"%file
         file = os.path.join(file,"fastqc_data.txt")
+        print "File %s"%file
 
         data   = {}
         name   = None
