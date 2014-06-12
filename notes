@@ -1,0 +1,127 @@
+
+
+runners  - 
+
+FastqFileStats
+
+FastqFileQualfinder - FastQC reports this
+
+
+
+==============================================
+
+
+ -  getStatusSummary
+
+ -  run_analysis - registers analyses but doesn't run them
+
+ -  getRecentChanges
+
+ -  run_analysis takes analysis id and runs (complement to register in
+    run_analysis)
+
+
+
+ - output directory - how to set default and store
+
+
+ - summary data for analysis modules
+
+ - log data - 
+==============================================
+
+
+For analysis jobs
+
+
+ -  time distribution in each section
+
+ -  distribution of summary data
+
+
+ -  how to catch ctrl C.  Is there enough info in failed jobs.
+
+
+=============================================
+
+getJobs({status: "NEW", owner: "mclamp",  etc start, end
+
+ - check directory space - each analysis has an estimate?
+
+
+ - slurmDBRunner - needs batch script which is stored in the db too
+
+
+ - script to get new jobs from the db and run them
+
+ - script to get new jobs from the db and submit them.
+
+
+ - AnalysisDBRunner (run_analysis could do this)
+
+=============================================
+
+
+pipeline
+
+ - name
+
+ - inputtype, single, multiple
+
+ - previous analysis
+
+ - analysis
+
+ - nextanalysis
+
+PipelineRunner - picks up finished analyses and checks if further
+steps are needed.  Analysis will need pipeline id
+
+ - retries
+
+=========================================================
+
+ - output_directory - for each job
+ - make date stamp directory FastQC_2014-05-04  
+ - make directory for input filename?  Analysis id?  - increment if it
+ - exists.
+
+ - hostname
+ - owner
+
+=========================================================
+
+ - remove output files (in post process - after move.  make sure we
+   save the filenames to move)
+
+ - unique output directory.
+
+ - register new analyses
+
+ - pick up new analyses and run
+
+ - get recent analyses
+
+ - display analyses name,status
+
+ - rerun analyses.
+
+==========================================================
+
+ - Batch files together for alignment?  
+
+ - Get read counts.
+
+ - Genomes need annotation with them.  
+
+ - Coverage stats?
+
+ - SNP calls?
+ 
+==========================================================
+
+Trimmomatic???
+
+
+
+
