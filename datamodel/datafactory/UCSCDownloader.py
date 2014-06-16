@@ -22,7 +22,7 @@ class UCSCDownloader():
         self.genome_name  = genome_name
 
         self.ftp_sitename = "hgdownload.cse.ucsc.edu"
-        self.ftp_topdir   = "goldenPath"
+        self.ftp_topdir   = "/goldenPath"
         self.ftp_fastadir = "bigZips"
 
 
@@ -72,7 +72,6 @@ class UCSCDownloader():
 
         fasta_file     = self.findSoftmaskedFastaFile(ftp_dir)
 
-
         checkfile = self.checkExistingFile(dest_genomedir,ftp_dir,fasta_file)
 
         if checkfile == False or overwrite == True:
@@ -93,23 +92,7 @@ class UCSCDownloader():
         # Index the single fasta for fetching pieces using samtools
 
 
-    def checkExistingFile(self,dest_dir,src_dir,src_file):
-
-        src_size  = self.ftp.size(src_dir + "/" + src_file)
-        dest_size = None
-
-        if os.path.exists(dest_dir + "/" + src_file):
-            dest_size = os.path.size(dest_dir + "/" + src_file)
-        else:
-            return False
-
-        if dest_size == src_size:
-            return True
-        else:
-            return False
-            
-        
-    def fetchGenomeMRNAFasta(self,dest_topdir,overwrite=False):
+    def fetchGenomeRefMrnaFasta(self,dest_topdir,overwrite=False):
 
         """ Gets fasta file for mrna from UCSC ftp site """
 
@@ -120,12 +103,15 @@ class UCSCDownloader():
 
         fasta_file     = self.findRefMrnaFastaFile(ftp_dir)
 
+        checkfile = self.checkExistingFile(dest_genomedir,ftp_dir,fasta_file)
 
-        self.fetchFile(ftp_dir,
-                       fasta_file,
-                       dest_genomedir,
-                       False,
-                       overwrite)
+        if checkfile == False or overwrite == True:
+
+            self.fetchFile(ftp_dir,
+                           fasta_file,
+                           dest_genomedir,
+                           False,
+                           overwrite)
 
 
     def fetchRefGeneCoords(self,dest_topdir,overwrite=False):
@@ -164,7 +150,7 @@ class UCSCDownloader():
 
         print "Files are %s"%files
 
-        filelist = ['refMrna.tar.gz']
+        filelist = ['refMrna.fa.gz']
 
         for f in files:
 
@@ -173,6 +159,26 @@ class UCSCDownloader():
                     return ff
 
         raise Exception("No recognizable softmasked fasta file.  Looked for %s.   Files in dir are %s"%(filelist,files))
+
+    def checkExistingFile(self,dest_dir,src_dir,src_file):
+
+        self.ftp.sendcmd("TYPE i")    # Change to binary mode
+
+        src_size  = self.ftp.size(src_dir + "/" + src_file)
+        dest_size = None
+
+        if os.path.exists(dest_dir + "/" + src_file):
+            dest_size = os.path.getsize(dest_dir + "/" + src_file)
+        else:
+            return False
+
+        if dest_size == src_size:
+            print "File sizes agree for file %s srcdir %s destdir %s"%(src_file,src_dir,dest_dir)
+            return True
+        else:
+            return False
+            
+        
 
 
     def connect(self):
@@ -202,4 +208,5 @@ if __name__ == "__main__":
     obj = UCSCDownloader('hg19')
 
     obj.fetchGenomeSoftmaskedFasta('/Users/mclamp/genomes/')
+    obj.fetchGenomeRefMrnaFasta('/Users/mclamp/genomes/')
 
