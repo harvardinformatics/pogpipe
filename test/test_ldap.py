@@ -1,4 +1,5 @@
 import ldap, sys
+import ldap.modlist as modlist
 
 #ldap.set_option(ldap.OPT_REFERRALS, 0) 
 #ldap.set_option(ldap.OPT_PROTOCOL_VERSION, ldap.VERSION3)          # use LDAP v3
@@ -31,5 +32,46 @@ if __name__ =='__main__':
     ld = LdapConnection()
     results = ld.search(filter,['*'])
 
-    for r in results:
-        print r.__dict__
+    username = "pogtest"
+    password = "98Pogg76"
+    firstname = "Pog"
+    surname  = "Test"
+
+    dn="cn=Pog Test,OU=Domain Users,DC=rc,DC=domain" # % (username, AD_SEARCH_DN)
+
+    displayName = "Pog Test" #'%s %s [%s]' % (surname, firstname, username)
+
+    # A dict to help build the "body" of the object
+    attrs = {}
+    attrs['objectclass'] = ['top','person','organizationalPerson','user']
+    attrs['cn'] = str(username)
+    attrs['sAMAccountname'] = str(username)
+    attrs['userPassword'] = str(password)
+    attrs['givenName'] = str(firstname)
+    attrs['sn'] = str(surname)
+    attrs['displayName'] = str(displayName)
+    attrs['userPrincipalName'] = "%s at mail.domain.it" % username
+
+    # Some flags for userAccountControl property
+    SCRIPT = 1
+    ACCOUNTDISABLE = 2
+    HOMEDIR_REQUIRED = 8
+    PASSWD_NOTREQD = 32
+    NORMAL_ACCOUNT = 512
+    DONT_EXPIRE_PASSWORD = 65536
+    TRUSTED_FOR_DELEGATION = 524288
+    PASSWORD_EXPIRED = 8388608
+
+    # this works!
+    attrs['userAccountControl'] = str(NORMAL_ACCOUNT + ACCOUNTDISABLE)
+
+    # this does not work :-(
+    #attrs['userAccountControl'] = str(NORMAL_ACCOUNT)
+    
+# Convert our dict to nice syntax for the add-function using modlist-module
+    ldif = modlist.addModlist(attrs)
+
+    print ldif
+    ld.ldap_conn.simple_bind_s("account@rc.domain",'Formula350!')
+    ld.ldap_conn.add_s(dn,ldif)
+
