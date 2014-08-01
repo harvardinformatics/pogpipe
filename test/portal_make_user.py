@@ -74,6 +74,7 @@ if __name__ == '__main__':
     parser.add_argument('-f','--first_name' , help="First name")
     parser.add_argument('-l','--last_name'  , help="Last name")
     parser.add_argument('-c','--cluster'    , help="Add cluster access",action="store_true")
+    parser.add_argument('-n','--new'        , help="This is a new user")
     parser.add_argument('-t','--state'      , help="Account state [active|disabled]")
     parser.add_argument('-d','--home_dir'   , help="Home directory (will generate one if --cluster")
     parser.add_argument('-s','--store'      , help="Saves the user to portal and AD")
