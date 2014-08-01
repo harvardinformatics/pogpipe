@@ -179,8 +179,6 @@ class UCSCDownloader():
             return False
             
         
-
-
     def connect(self):
 
         """ Initial connection to the UCSC ftp site"""
