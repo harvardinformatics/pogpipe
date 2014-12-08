@@ -8,6 +8,7 @@ from   config                              import settings
 from   datamodel.AnalysisRunner            import AnalysisRunner
 from   datamodel.factory.AnalysisFactory   import AnalysisFactory
 from   datamodel.factory.AnalysisDBFactory import AnalysisDBFactory
+from   datamodel.BlastOutput6ParserAnalysis import BlastOutput6ParserAnalysis
 
 
 # If register then
@@ -86,7 +87,7 @@ class AnalysisRunnerWrapper(object):
          
     def run(self):
 
-        try:
+        #try:
 
             # Create the analysis runner which runs the commands and saves the output
 
@@ -115,13 +116,14 @@ class AnalysisRunnerWrapper(object):
             self.ana.current_status  = "ANALYSIS_FINISHED"
             self.dbfactory.saveAnalysis(self.ana)
             
-        except Exception as e:
+    #    except Exception as e:
 
-            self.ana.current_status = "FAILED"
-            self.dbfactory.saveAnalysis(self.ana)
+     #       self.ana.current_status = "FAILED"
+     #       self.dbfactory.saveAnalysis(self.ana)
             
             # Need to add error message to the analysis
 
-            str = "AnalysisRunnerWrapper %20s %s Failed %s Inputs were [%s] Params [%s] Error was [%s]" % (self.ana.name,self.ana.id,self.ana.current_status,self.ana.input_files,self.ana.param,e.args[0])
-            logging.error(" ========> %s"%str);
-            print "ERROR: %s"%str
+     #       str = "AnalysisRunnerWrapper %20s %s Failed %s Inputs were [%s] Params [%s] Error was [%s]" % (self.ana.name,self.ana.id,self.ana.current_status,self.ana.input_files,self.ana.param,e.args[0])
+     #       logging.error(" ========> %s"%str);
+     #       print "ERROR: %s"%str
+     #       print "ERROR: %s"%e

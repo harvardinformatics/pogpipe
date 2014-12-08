@@ -18,7 +18,7 @@ LOGFILE              = '/tmp/pogpipe_' + datetime.now().strftime("%Y-%m-%d")+'.l
 TMPDIR               = '/tmp/'
 TESTDBNAME           = 'test.db'
 
-ANALYSIS_MODULES     = ['FastQC','DirectoryList','DirectorySize','Bowtie2']
+ANALYSIS_MODULES     = ['FastQC','DirectoryList','DirectorySize','Bowtie2','BlastOutput6Parser']
 
 DATABASE_DIR         = ['/n/home_rc/mclamp/Dropbox/databases/']
 #DATABASE_DIR         = ['/n/regal/informatics/databases/']
