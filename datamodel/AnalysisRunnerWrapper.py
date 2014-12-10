@@ -124,4 +124,5 @@ class AnalysisRunnerWrapper(object):
 
             str = "AnalysisRunnerWrapper %20s %s Failed %s Inputs were [%s] Params [%s] Error was [%s]" % (self.ana.name,self.ana.id,self.ana.current_status,self.ana.input_files,self.ana.param,e.args[0])
             logging.error(" ========> %s"%str);
-            print "ERROR: %s"%str
+            logging.error(" ========> %s"%e);
+            print "ERROR: %s"%e

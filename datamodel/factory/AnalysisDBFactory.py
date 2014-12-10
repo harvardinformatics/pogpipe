@@ -510,6 +510,8 @@ class AnalysisDBFactory(object):
     def connect(self,dbname):
         self.dbname = dbname
 
+        logging.info("========> Trying to connect to %s"%dbname)
+
         try:
             con = sqlite3.connect(dbname)
             
