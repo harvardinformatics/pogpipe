@@ -170,6 +170,7 @@ class Analysis(object):
         valid = True;
 
         for i in self.input_files:
+
             if os.path.isfile(i) == False:
                 valid = False
 

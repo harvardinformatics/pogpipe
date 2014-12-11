@@ -71,6 +71,7 @@ class AnalysisRunnerWrapper(object):
 
 
     def createAnalysisRunnerClass(self):
+        print self.args
 
         self.dbfactory = AnalysisDBFactory(settings.DBNAME)
 
