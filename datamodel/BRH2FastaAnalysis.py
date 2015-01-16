@@ -81,9 +81,10 @@ class BRH2FastaAnalysis(Analysis):
                          print "VAL %s :%s"%(blastdb,val)
                          if val != "-":
                              seq = SequenceFactory.getSequenceFromBlastDB(val,blastdb)
-                             
+                             tmpblastdb = re.sub('.*\/','',blastdb)
+                             seq[0] = re.sub('^>','>'+tmpblastdb+"_",seq[0])
                              msafp.write(seq[0])
-                             print "SEQ %s"%seq
+                             print "SEQ %s"%seq[0]
                  
                  msafp.close()
 
