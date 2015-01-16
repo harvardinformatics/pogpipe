@@ -17,15 +17,11 @@ def main(args):
 
     logging.info("ARGS %s"%args)
 
-
     ff = FastaFile(args.fastafile)
 
     seqs = []
 
     seq = ff.nextSeq()
-
-    if not seq['id'].startswith('7'):
-      seqs.append(seq)   
 
     while seq is not None:
 
@@ -39,6 +35,17 @@ def main(args):
     newseqs = []
 
 
+    prof = ff.calcProfile(seqs)
+    print prof
+
+    if args.trim :
+      j = 0
+      while j < len(seqs):
+        print ">%s\n%s"%(seqs[j]['id'], seqs[j]['seq'])
+        j = j + 1
+
+    exit()
+
     j = 0
     while j < len(seqs):
       newseqs.append("")
@@ -48,7 +55,7 @@ def main(args):
     
     while i < seqlen:
 
-       j     = 0;
+       j     = 0
        count = 0 
 
        while j < len(seqs):
@@ -68,6 +75,7 @@ def main(args):
        i = i + 1
 
 
+    
     j = 0
     while j < len(seqs):
         print ">%s\n%s"%(seqs[j]['id'], newseqs[j])
@@ -78,6 +86,7 @@ if __name__ == '__main__':
     parser        = ArgumentParser(description = 'Extract certain seuqences from a multiply aligned fasta file and trim out gaps')
 
     parser.add_argument('-f','--fastafile'   , help='FastaFile to trim')
+    parser.add_argument('-t','--trim'   ,      help='Trim gaps out of aligned sequences',action="store_true")
     parser.add_argument('-s','--seqids',       help='Sequence IDs to extract')
     
     args = parser.parse_args()

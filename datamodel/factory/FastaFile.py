@@ -58,4 +58,54 @@ class FastaFile(object):
         return seq
 
  
- 
+
+    def calcProfile(self,seqs):
+
+       seqlen = len(seqs[0]['seq'])
+
+       print "LEn %d"%seqlen
+       counts = []
+
+       i = 0
+
+       while i < seqlen:
+
+         tmpcounts = {}
+
+         j = 0;
+
+         while j < len(seqs):
+
+            char = seqs[j]['seq'][i]
+            if char not in tmpcounts:
+               tmpcounts[char] = 0
+
+            tmpcounts[char] = tmpcounts[char]+1
+
+            j = j + 1
+
+       print "I %d %d %s"%(i,j,tmpcounts)
+       counts.append(tmpcounts)
+
+       i = i + 1
+
+
+       return counts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
