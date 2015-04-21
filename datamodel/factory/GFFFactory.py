@@ -25,8 +25,12 @@ class GFFFactory(object):
         if line is None:
            return
 
+        if re.search('^##FASTA',line):
+            return None
+
         if re.search('^#',line):
             continue
+
 
         line = line.rstrip('\n')
         ff   = line.split('\t')

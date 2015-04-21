@@ -3,6 +3,7 @@ from argparse  import ArgumentParser
 import importlib
 import logging
 import os
+import re
 import sys
 import csv
 import pprint
@@ -34,22 +35,35 @@ def main(args):
         seq = fastafile.nextSeq()
 
 
-    gff = gff_factory.nextGFF()
+    try:
+        gff = gff_factory.nextGFF()
+    except Exception, e:
+        sys.stderr.write("ERROR: %s\n"%e)
 
     while gff is not  None:
-        hid = gff.hitattr['ID']
+        try:
+            hid = gff.hitattr['ID']
         #print "%s\t%s\t%s\t%d\t%d\t%f\t%d\t%s\t%s"%(gff.qid,gff.type1,gff.type2,gff.qstart,gff.qend,gff.score,gff.strand,gff.phase,hid)
-        if gff.type2 == "CDS":
-            seq = seqs[gff.qid]
-            seq = seq[gff.qstart-1:gff.qend]
+            if gff.type2 == "CDS":
+                seq = seqs[gff.qid]
+                seq = seq[gff.qstart-1:gff.qend]
 
             #print "%d\t%s"%(gff.strand,seq)
+                
+                newseq = translate(seq,gff.strand)
+                newseq = re.sub('\*$','',newseq)
+                
+                rr = re.findall(r'.{1,80}',newseq)
+                
+                newseq = '\n'.join(rr)
+                
+                print ">%s\n%s"%(hid,newseq)
 
-            newseq = translate(seq,gff.strand)
-            print ">%s\n%s"%(hid,newseq)
 
+            gff = gff_factory.nextGFF()
 
-        gff = gff_factory.nextGFF()
+        except Exception, e:
+            sys.stderr.write("ERROR: %s\n"%e)
 
 
 def translate(seq,strand):

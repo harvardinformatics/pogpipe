@@ -49,6 +49,7 @@ class FastaFile(object):
 
     def calcMutationDist(self):
        
+        print "MUT %40s %40s %40s %4s %4s %4s %4s %5s %5s %5s %12s %20s %20s"%("Filename","ID1","ID2","Pos","C1","C2","C3","Found","NG1","NG2","Cons_M","Coverage","Percentid")
         j = 0
         while j < len(self.seqs):
 
@@ -98,7 +99,7 @@ class FastaFile(object):
                     if foundc != '-':
                        ischar2 = 0
 
-                    print "File %40s IDs %40s - %40s same Position %4d = %c %c %c %d %d %d %d %s %s"%(self.filename,self.seqs[j]['id'],self.seqs[k]['id'],i,c_j,c_k,foundc,found,ischar1,ischar2,self.cons_meth,'\t'.join(str(x) for x in self.coverage),'\t'.join(str(x) for x in self.percentid))
+                    print "MUT %40s %40s %40s %4d %4c %4c %4c %5d %5d %5d %12d %12s %12s"%(self.filename,self.seqs[j]['id'],self.seqs[k]['id'],i,c_j,c_k,foundc,found,ischar1,ischar2,self.cons_meth,'\t'.join(str(x) for x in self.coverage),'\t'.join(str(x) for x in self.percentid))
 
                   i = i + 1
 
@@ -266,6 +267,32 @@ class FastaFile(object):
            i = i + 80
 
        self.prettystr = str
+
+    @staticmethod
+    def toString(seqs):
+
+       str    = []
+       seqlen = -1
+
+       j = 0
+
+       for seq in seqs:
+
+           if len(seq['seq']) > seqlen:
+               seqlen = len(seq['seq'])
+           j = j + 1
+
+       for seq in seqs:
+           str.append(">%s"%seq['id'])
+           i = 0
+           while i < len(seq['seq']):
+               str.append(''.join(seq['seq'][i:i+80]))
+               i = i + 80
+           j = j + 1
+
+       string = '\n'.join(str)
+
+       return string
            
     def nextSeq(self):
 

@@ -11,6 +11,7 @@ import re
  
 from config import settings
 
+# grep MUT procaln.out13 |grep -v Filename |grep MS69 |grep MS200 |awk '$10 == 0 && $11 == 0 && $12 == 1' |awk '$16 > 90 {print $2}' |sort |uniq -c |sort -nk1 |awk '$1 > 10' |wc -l
 def main(args):
 
     logging.info(" ========> process_alnfile.py")
