@@ -25,7 +25,7 @@ while (my $line = <$fh1>) {
 
     chomp($line);
 
-    if ($line =~ /^gi/) {
+    #if ($line =~ /^gi/) {
 	my @f = split(/\t/,$line);
 
 	my $qid = $f[0];
@@ -39,7 +39,7 @@ while (my $line = <$fh1>) {
 	$prev = $qid;
 	
 
-    }
+    #}
 }
 
 $prev = undef;
@@ -48,7 +48,7 @@ while (my $line = <$fh2>) {
 
     chomp($line);
 
-    if ($line =~ /^gi/) {
+    #if ($line =~ /^gi/) {
 	my @f = split(/\t/,$line);
 
 	my $qid = $f[0];
@@ -60,7 +60,7 @@ while (my $line = <$fh2>) {
 
 	}
 	$prev = $qid;
-    }
+    #}
 }
 
 

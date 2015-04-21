@@ -1,3 +1,6 @@
+
+from argparse  import ArgumentParser
+
 from   datamodel.Analysis       import Analysis
 from   datamodel.FileUtils      import FileUtils
 from   datamodel.factory.SequenceFactory import SequenceFactory
@@ -49,7 +52,7 @@ class BRH2FastaAnalysis(Analysis):
         species = []
 
         blastdbs = ["~/Dropbox/Seim/seim/MS69-1","~/Dropbox/Seim/seim/70-100-2010","~/Dropbox/Seim/seim/7_1_58FAA","~/Dropbox/Seim/seim/BL21","~/Dropbox/Seim/seim/MS200-1"]
-
+        blastdbs = []
         
         with open(orthfile) as fp:
 
@@ -63,15 +66,19 @@ class BRH2FastaAnalysis(Analysis):
 
 
              if line_num == 1:
-               species = ff
+                 species = ff
+
+                 for sp in species:
+                     blastdbs.append(sp)
+
              else:
                  
                  for i,val in enumerate(ff):
 
                      if i == 0:
-                         tmp = val.split('|')
+                         print val
                          
-                         filename = tmp[3] + ".fa"
+                         filename = val + ".fa"
                          print "FILE %s"%filename
                          msafp = open(filename,"w")
 
@@ -81,10 +88,12 @@ class BRH2FastaAnalysis(Analysis):
                          print "VAL %s :%s"%(blastdb,val)
                          if val != "-":
                              seq = SequenceFactory.getSequenceFromBlastDB(val,blastdb)
+
                              tmpblastdb = re.sub('.*\/','',blastdb)
-                             seq[0] = re.sub('^>','>'+tmpblastdb+"_",seq[0])
-                             msafp.write(seq[0])
-                             print "SEQ %s"%seq[0]
+                             seq['id'] = re.sub('^>','>'+tmpblastdb+"_",seq['id'])
+                             msafp.write(">"+seq['id']+"\n")
+                             msafp.write(seq['seq']+"\n")
+                             print "SEQ %s"%seq
                  
                  msafp.close()
 
@@ -93,3 +102,18 @@ class BRH2FastaAnalysis(Analysis):
 
   
              
+if __name__ == '__main__':
+
+    parser        = ArgumentParser(description = 'Extract fasta files for orthologs (1 per gene) from a combined_brh file')
+
+    parser.add_argument('-f', '--combinedbrhfile'   , help='Combined BRH file')
+    
+    args = parser.parse_args()
+
+    brh = BRH2FastaAnalysis()
+
+    brh.input_files.append(args.combinedbrhfile)
+
+    brh.getOrthologs()
+
+

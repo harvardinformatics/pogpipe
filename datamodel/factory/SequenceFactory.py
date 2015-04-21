@@ -5,6 +5,7 @@ import logging
 import importlib
 
 from   config          import settings
+from   subprocess      import Popen, PIPE
 
 class SequenceFactory(object):
     """Factory class that returns sequences or partial sequences given an id"""
@@ -16,7 +17,7 @@ class SequenceFactory(object):
         progname    = "blastdbcmd"
         blastdbcmd  = bindir + progname
 
-        cmd = self.blastdbcmd + " -db " + blastdb + " -entry " + id
+        cmd = blastdbcmd + " -db " + blastdb + " -entry " + id
 
         print "Command %s"%cmd
 
@@ -34,15 +35,39 @@ class SequenceFactory(object):
             
             (out,err) = p.communicate()
             
-                #print "OUT - %s"%out
-                #print "ERR - %s"%err
+            print "OUT - %s"%out
+            print "ERR - %s"%err
             
             if out != '':
-                output_str.append(out)
+                output_str = output_str + out
+
                 sys.stdout.flush()
 
+                lines = output_str.split('\n')
+                seqstr = ""
+                seqid  = None
+
+                for line in lines:
+                    line = line.rstrip('\n')
+                    ff   = line.split(' ')
+
+                    if ff[0].startswith(">"):
+                        seqid = ff[0].replace(">",'')
+                    else:
+                        seqstr = seqstr + line
+
+                if seqid is not None:
+                    seq = {}
+
+                    seq['id']  = seqid
+                    seq['seq'] = seqstr
+
+                    return seq
+
+
+
             if err != '':
-                output_str.append(err)
+                output_str = output_str + err
                 sys.stderr.flush()
 
 
