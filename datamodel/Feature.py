@@ -25,11 +25,11 @@ class Feature(object):
         self.qlen                  = None
         self.qcov                  = None
 
-        self.score                 = None
-        self.frame                 = None
-        self.strand                = "0"
-        self.phase                 = "."
-        self.pid                   = None
+        self.score                 = 0
+        self.frame                 = 0
+        self.strand                = 0
+        self.phase                 = 0
+        self.pid                   = 0
 
         self.hid                   = None
         self.hstart                = None
@@ -41,7 +41,7 @@ class Feature(object):
         self.qseq                  = None
         self.hseq                  = None
        
-
+        self.hitattr               = {}
     def __str__(self):
 	
 	str = "%s\t%s\t%s\t%d\t%d\t%f\t%s\t%s\t%s\t%d\t%d\t%d\t%d\t%s\t%s\t%f\n"%(self.qid,self.type1,self.type2,self.qstart,self.qend,self.score,self.strand,self.phase,self.hid,self.hstart,self.hend,self.qlen,self.hlen,self.qseq,self.hseq,self.pid) 
