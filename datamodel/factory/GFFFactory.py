@@ -49,7 +49,7 @@ class GFFFactory(object):
 #NZ_JODT01000001.1       Protein Homology        CDS     3499    4323    .       +       0       ID=cds3;Parent=gene3;Dbxref=Genbank:WP_03060
 
         if len(ff) < 8:
-            raise Exception("GFF line needs 8 or more fields to parse")
+            raise Exception("GFF line needs 8 or more fields to parse [%s]"%line)
 
         f = Feature()
 

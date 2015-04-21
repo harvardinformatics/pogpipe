@@ -78,7 +78,11 @@ def translate(seq,strand):
 
     i = 0
     while i < len(seq)-2:
-        newseq = newseq + map[seq[i:i+3]]
+        if seq[i:i+3] in map:
+            newseq = newseq + map[seq[i:i+3]]
+        else:
+            newseq = newseq + "X"
+
         i += 3
 
     return newseq
