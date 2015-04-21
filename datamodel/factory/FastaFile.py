@@ -48,7 +48,8 @@ class FastaFile(object):
        self.calcMutationDist()
 
     def calcMutationDist(self):
-       
+        #print len(self.seqs) 
+        #print self.seqlen
         print "MUT %40s %40s %40s %4s %4s %4s %4s %5s %5s %5s %12s %20s %20s"%("Filename","ID1","ID2","Pos","C1","C2","C3","Found","NG1","NG2","Cons_M","Coverage","Percentid")
         j = 0
         while j < len(self.seqs):
@@ -65,9 +66,8 @@ class FastaFile(object):
               #     - Where are these positions
 
               i = 0
- 
+               
               while i < self.seqlen:
-
                   c_j = self.seqs[j]['seq'][i]
                   c_k = self.seqs[k]['seq'][i]
 
