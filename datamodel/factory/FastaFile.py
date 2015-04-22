@@ -30,6 +30,7 @@ class FastaFile(object):
 #       print self.percentid
 
        j = 0
+
        print "\n%s\t%40s\t%s\t%s"%(self.filename,"ID","Cov","PID")
 
        while j < len(self.seqs):
@@ -45,11 +46,71 @@ class FastaFile(object):
        print "";
        self.prettyPrint()
        print "";
-       self.calcMutationDist()
+
+       # Only really relevant when we have more than 2 sequences.
+       if len(self.seqs) > 2:
+           self.calcMutationDist()
+       else:
+           self.calcMutationProfile()
+
+    def calcMutationProfile(self):
+
+        # For each sequence we'd like to know how many mutations there are from the consensus
+
+        print "MUT %40s %40s %40s %4s %4s %4s %4s %5s %5s %5s %12s %20s %20s"%("Filename","ID1","ID2","Pos","C1","C2","C3","Found","NG1","NG2","Cons_M","Coverage","Percentid")
+        j = 0
+
+        while j < len(self.seqs):
+
+            i = 0
+               
+            while i < self.seqlen:
+                cons_c = self.consensus[i]
+                seq_c  = self.seqs[j]['seq'][i]
+
+                  jj     = 0
+                  found  = 0 
+                  foundc = '-'
+
+                  while  jj < len(self.seqs):
+
+                     c_jj = self.seqs[jj]['seq'][i]
+                 
+                     if jj != j and jj != k:
+
+                         if c_jj != c_j and c_jj != c_k:
+
+                            if c_j == c_k:
+                                 found = 1
+                                 foundc = c_jj
+                     jj = jj + 1
+
+                  if found == 1:
+
+                    ischar1 = 1
+                    ischar2 = 1
+
+                    if c_j != '-' and c_k != '-':
+                       ischar1 = 0
+
+                    if foundc != '-':
+                       ischar2 = 0
+
+                    print "MUT %40s %40s %40s %4d %4c %4c %4c %5d %5d %5d %12d %12s %12s"%(self.filename,self.seqs[j]['id'],self.seqs[k]['id'],i,c_j,c_k,foundc,found,ischar1,ischar2,self.cons_meth,'\t'.join(str(x) for x in self.coverage),'\t'.join(str(x) for x in self.percentid))
+
+                  i = i + 1
+
+              k = k+ 1
+
+	   j = j + 1
+
+
 
     def calcMutationDist(self):
+
         #print len(self.seqs) 
         #print self.seqlen
+
         print "MUT %40s %40s %40s %4s %4s %4s %4s %5s %5s %5s %12s %20s %20s"%("Filename","ID1","ID2","Pos","C1","C2","C3","Found","NG1","NG2","Cons_M","Coverage","Percentid")
         j = 0
         while j < len(self.seqs):
