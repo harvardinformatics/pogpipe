@@ -32,7 +32,6 @@ for i in *.pep.fa ; do
          echo "Running blastp query $i database $jj"
          blastp -db $jj -query $i -outfmt '6 std qlen slen qseq sseq' > $ii-$jj.blastp
        fi
-
      fi
    done
 done
