@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Blast output columns for outfmt 6 are
+# queryId, subjectId, percIdentity, alnLength, mismatchCount, gapOpenCount, queryStart, queryEnd, subjectStart, subjectEnd, eVal, bitScore
+
+# In addition we add qlen slen qseq sseq
 
 for i in *.pep.fa ; do
    ii=${i%.pep.fa}
