@@ -46,17 +46,25 @@ def main(args):
         ids.append(seq['id'])
         seq = ff.nextSeq()
 
-    print "\nFILESTATS\t%s\tNumber_of_seqs\t%d\tIDS\t%s"%(args.fastafile,len(ids),','.join(ids))
+    pid = 101
 
+    if args.pid is not None:
+        pid = int(args.pid)
 
     stats = ff.calcStats()
 
+    if stats['av_ungapped_percentid'] < pid:
+
+        print "\nFILESTATS\t%s\tNumber_of_seqs\t%d\tIDS\t%s"%(args.fastafile,len(ids),','.join(ids))
+        print stats['outstr']
+        print stats['avpercentid']
 
 if __name__ == '__main__':
 
     parser        = ArgumentParser(description = 'Process a multiply aligned fasta file and extract stats')
 
     parser.add_argument('-f','--fastafile'   , help='FastaFile to trim')
+    parser.add_argument('-p','--pid'         , help='Only print alignments below this average percent identity')
     
     args = parser.parse_args()
 

@@ -19,6 +19,8 @@ class FastaFile(object):
 
     
     def calcStats(self):
+       self.stats = {}
+
        self.calcSeqlen()
        self.calcProfile()
        self.calcConsensus()
@@ -31,15 +33,23 @@ class FastaFile(object):
 
        outstr = outstr +  "\n%s\t%40s\t%s\t%s\n"%(self.filename,"ID","Cov","PID")
 
+       avpid = 0
+
        while j < len(self.seqs):
 
           tmpcov = self.coverage[j]
           tmppid = self.percentid[j]
           tmpid  = self.seqs[j]['id']
 
+          avpid = avpid + tmppid
+
           outstr = outstr +  "%s\t%40s\t%d\t%d"%(self.filename,tmpid,tmpcov,tmppid)
 
           j = j + 1
+
+       avpid = int(avpid / len(self.seqs))
+
+       self.stats['avpercentid'] = avpid
 
        outstr = outstr + "\n"
        outstr = outstr + self.prettyPrint()
@@ -49,10 +59,13 @@ class FastaFile(object):
 
        if len(self.seqs) > 2:
            outstr = outstr +  "Calculating mutation distribution for [%s] sequences"%(len(self.seqs))
-           self.calcMutationDist()
+           outstr = outstr +  self.calcMutationDist()
        elif len(self.seqs) == 2:
            outstr = outstr +  "Calculating pairwise mutation distribution for [%s] sequences"%(len(self.seqs))
-           self.calcPairwiseMutationProfile()
+           outstr = outstr + self.calcPairwiseMutationProfile()
+
+       self.stats['outstr'] = outstr
+       return self.stats
 
     def calcPairwiseMutationProfile(self):
 
@@ -141,11 +154,15 @@ class FastaFile(object):
         cov1 = int(100*charcount1/conslen)
         cov2 = int(100*charcount2/conslen)
                 
+        outstr = outstr + "\n"
 #        print "PAIRMUT %40s %40s %40s %4d %4d %4d %4d %5d %5d %5d %5d %5d %5d"%("Filename","ID1","ID2","Pos","C1","C2","Found","NG1","NG2","Cons_M","Coverage","Percentid")
-        outstr = outstr +  "PAIRMUT %40s %40s %40s %4s %4s %10s %6s %8s %6s %6s %5s %5s %5s %5s\n"%("Filename","ID1","ID2","Len1","Len2","conslen","Match","Mismatch","Indel1","Indel2","Cov1","Cov2","PID1","PID2")
-        print "PAIRMUT %40s %40s %40s %4d %4d %10d %6d %8d %6d %6d %5d %5d %5d %5d"%(self.filename,seq1['id'],seq2['id'],len(seq1['seq']),len(seq2['seq']),conslen,match1,mismatch1,indel1,indel2,cov1,cov2,pid1,pid2)
+        outstr = outstr +  "PAIRMUT %40s %40s %40s %4s %4s %10s %6s %8s %6s %6s %5s %5s %5s %5s %5s %5s\n"%("Filename","ID1","ID2","Len1","Len2","conslen","Match","Mismatch","Indel1","Indel2","Cov1","Cov2","PID1","PID2","PID1GAP","PID2GAP")
+        outstr = outstr +  "PAIRMUT %40s %40s %40s %4d %4d %10d %6d %8d %6d %6d %5d %5d %5d %5d %5d %5d\n"%(self.filename,seq1['id'],seq2['id'],len(seq1['seq']),len(seq2['seq']),conslen,match1,mismatch1,indel1,indel2,cov1,cov2,pid1,pid2,self.percentid[0],self.percentid[1])
 
-        j = 0
+        self.stats['ungapped_percentid'] = [pid1,pid2]
+        self.stats['av_ungapped_percentid'] = int((pid1+ pid2)/2)
+
+        return outstr
 
 
     def calcMutationDist(self):
@@ -218,6 +235,7 @@ class FastaFile(object):
            if len(seq['seq']) > seqlen:
              seqlen = len(seq['seq'])
      
+       self.stats['seqlen'] = seqlen
        self.seqlen = seqlen
 
     def calcProfile(self):
@@ -267,6 +285,10 @@ class FastaFile(object):
        self.total   = total
        self.cons_meth = cons_meth
 
+       self.stats['profile'] = profile
+       self.stats['total']   = total
+       self.stats['cons_meth'] = cons_meth
+
     def calcConsensus(self):
        # Consensus sequence 
 
@@ -280,19 +302,20 @@ class FastaFile(object):
           maxchar  = '-'
  
           for c in self.profile[i]:
-
+             
              if c != '-':
 
                if self.profile[i][c] > maxcount:
                   maxchar = c
                   maxcount = self.profile[i][c]
 
-          consensus.append(c)
+          consensus.append(maxchar)
 
           i = i + 1
 
        self.consensus = consensus                 
-              
+       self.stats['consensus'] = consensus
+
     def calcCoverageAndPID(self):
        coverage  = []
        percentid = []
@@ -329,6 +352,9 @@ class FastaFile(object):
 
        self.coverage   = coverage
        self.percentid  = percentid
+
+       self.stats['coverage'] = coverage
+       self.stats['percentid'] = percentid
 
     def prettyPrint(self):
 
