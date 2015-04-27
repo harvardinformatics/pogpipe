@@ -25,13 +25,11 @@ class FastaFile(object):
 
        self.calcCoverageAndPID()
 
-#       print self.total
-#       print self.coverage
-#       print self.percentid
+       outstr = ""
 
        j = 0
 
-       print "\n%s\t%40s\t%s\t%s"%(self.filename,"ID","Cov","PID")
+       outstr = outstr +  "\n%s\t%40s\t%s\t%s\n"%(self.filename,"ID","Cov","PID")
 
        while j < len(self.seqs):
 
@@ -39,71 +37,115 @@ class FastaFile(object):
           tmppid = self.percentid[j]
           tmpid  = self.seqs[j]['id']
 
-          print "%s\t%40s\t%d\t%d"%(self.filename,tmpid,tmpcov,tmppid)
+          outstr = outstr +  "%s\t%40s\t%d\t%d"%(self.filename,tmpid,tmpcov,tmppid)
 
           j = j + 1
 
-       print "";
-       self.prettyPrint()
-       print "";
+       outstr = outstr + "\n"
+       outstr = outstr + self.prettyPrint()
+       outstr = outstr + "\n"
 
        # Only really relevant when we have more than 2 sequences.
+
        if len(self.seqs) > 2:
+           outstr = outstr +  "Calculating mutation distribution for [%s] sequences"%(len(self.seqs))
            self.calcMutationDist()
-       else:
-           self.calcMutationProfile()
+       elif len(self.seqs) == 2:
+           outstr = outstr +  "Calculating pairwise mutation distribution for [%s] sequences"%(len(self.seqs))
+           self.calcPairwiseMutationProfile()
 
-    def calcMutationProfile(self):
+    def calcPairwiseMutationProfile(self):
 
-        # For each sequence we'd like to know how many mutations there are from the consensus
+        # We want the following
+        #   - consensus length, seq1 id, seq2 id, seq1 length, seq2 length, no of matches, no of differences, no indels in seq1 no indels in seq2, seq1 coverage, seq2 coverage, percent identity
+        
+        if self.consensus is None:
+            raise Exception("No consensus sequence - can't calculate pairwise mutation profile for %s"%self.filename)
 
-        print "MUT %40s %40s %40s %4s %4s %4s %4s %5s %5s %5s %12s %20s %20s"%("Filename","ID1","ID2","Pos","C1","C2","C3","Found","NG1","NG2","Cons_M","Coverage","Percentid")
-        j = 0
+        if len(self.seqs) != 2:
+            raise Exception("Number of sequences mismatch [%s].  Need 2 sequences to calculate pairwise mutation profile for "%self.filename)
 
-        while j < len(self.seqs):
 
-            i = 0
+        outstr  = ""
+
+        conslen = len(self.consensus)
+
+        seq1    = self.seqs[0]
+        seq2    = self.seqs[1]
+
+        len1    = len(seq1['seq'])
+        len2    = len(seq2['seq'])
+
+        match1    = 0
+        match2    = 0
+
+        mismatch1 = 0
+        mismatch2 = 0
+
+        indel1    = 0
+        indel2    = 0
+
+        pid       = 0
+        
+        charcount1 = 0
+        charcount2 = 0
+        i = 0
                
-            while i < self.seqlen:
-                cons_c = self.consensus[i]
-                seq_c  = self.seqs[j]['seq'][i]
+        while i < self.seqlen:
+            cons_c = self.consensus[i]
 
-                  jj     = 0
-                  found  = 0 
-                  foundc = '-'
+            char1  = seq1['seq'][i]
+            char2  = seq2['seq'][i]
 
-                  while  jj < len(self.seqs):
+            #print "CHARS %c %c %c"%(char1,char2,cons_c)
 
-                     c_jj = self.seqs[jj]['seq'][i]
-                 
-                     if jj != j and jj != k:
+            if char1 != '-':
+                charcount1 = charcount1 + 1
 
-                         if c_jj != c_j and c_jj != c_k:
+            if char2 != '-':
+                charcount2 = charcount2 + 1
 
-                            if c_j == c_k:
-                                 found = 1
-                                 foundc = c_jj
-                     jj = jj + 1
+            if char1 != '-' and char2 != '-':
 
-                  if found == 1:
 
-                    ischar1 = 1
-                    ischar2 = 1
+                if char1 == cons_c:
+                    #print "MAtch 1 %c %c"%(char1,cons_c)
+                    match1 = match1 + 1
+                    
+                else:
+                    mismatch1 = mismatch1 + 1
 
-                    if c_j != '-' and c_k != '-':
-                       ischar1 = 0
 
-                    if foundc != '-':
-                       ischar2 = 0
+                if char2 == cons_c:
+                    #print "MAtch 2 %c %c"%(char1,cons_c)
+                    match2 = match2 + 1
+                else:
+                    mismatch2 = mismatch2 + 1
+                    
 
-                    print "MUT %40s %40s %40s %4d %4c %4c %4c %5d %5d %5d %12d %12s %12s"%(self.filename,self.seqs[j]['id'],self.seqs[k]['id'],i,c_j,c_k,foundc,found,ischar1,ischar2,self.cons_meth,'\t'.join(str(x) for x in self.coverage),'\t'.join(str(x) for x in self.percentid))
+            elif char1 == '-':
+                indel1 = indel1 + 1
 
-                  i = i + 1
+            elif char2 == '-':
+                indel2 = indel2 + 1
 
-              k = k+ 1
+            else:
+                # We shouldn't get here
+                raise Exception("Something's wrong comparing characters.  We shouldn'get get here [%c] [%c] in file [%s]"%(char1,char2,self.filename))
 
-	   j = j + 1
+            i = i + 1
 
+        pid1 = int(100*match1/(match1+mismatch1))
+        pid2 = int(100*match2/(match2+mismatch2))
+
+        cov1 = int(100*charcount1/conslen)
+        cov2 = int(100*charcount2/conslen)
+                
+#        print "PAIRMUT %40s %40s %40s %4d %4d %4d %4d %5d %5d %5d %5d %5d %5d"%("Filename","ID1","ID2","Pos","C1","C2","Found","NG1","NG2","Cons_M","Coverage","Percentid")
+        outstr = outstr +  "PAIRMUT %40s %40s %40s %4s %4s %10s %6s %8s %6s %6s %5s %5s %5s %5s\n"%("Filename","ID1","ID2","Len1","Len2","conslen","Match","Mismatch","Indel1","Indel2","Cov1","Cov2","PID1","PID2")
+        print "PAIRMUT %40s %40s %40s %4d %4d %10d %6d %8d %6d %6d %5d %5d %5d %5d"%(self.filename,seq1['id'],seq2['id'],len(seq1['seq']),len(seq2['seq']),conslen,match1,mismatch1,indel1,indel2,cov1,cov2,pid1,pid2)
+
+        j = 0
 
 
     def calcMutationDist(self):
@@ -181,13 +223,14 @@ class FastaFile(object):
     def calcProfile(self):
        # Profile
 
+
        i = 0
 
        profile = []
        total  = []
 
        cons_meth = 1
-
+       
        while i < self.seqlen:
          profile.append({})
          total.append({})
@@ -199,6 +242,7 @@ class FastaFile(object):
          j = 0
 
          while j < len(self.seqs):
+             
              c = self.seqs[j]['seq'][i]
            
              if c not in profile[i]:
@@ -288,6 +332,7 @@ class FastaFile(object):
 
     def prettyPrint(self):
 
+       outstr = ""
        str = []
 
        j = 0;
@@ -320,14 +365,14 @@ class FastaFile(object):
 
        while i < self.seqlen:
            j = 0 
-           print "%40s %s"%("Consensus",consstr[i:i+80])
+           outstr = outstr +  "%40s %s\n"%("Consensus",consstr[i:i+80])
            while j < len(self.seqs):
-             print "%40s %s"%(self.seqs[j]['id'],''.join(str[j][i:i+80]))
-             j = j + 1
-           print "\n" 
+               outstr = outstr + "%40s %s\n"%(self.seqs[j]['id'],''.join(str[j][i:i+80]))
+               j = j + 1
+               outstr = outstr +  "\n" 
            i = i + 80
 
-       self.prettystr = str
+       return outstr
 
     @staticmethod
     def toString(seqs):
