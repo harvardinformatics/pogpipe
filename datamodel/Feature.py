@@ -42,6 +42,15 @@ class Feature(object):
         self.hseq                  = None
        
         self.hitattr               = {}
+
+    def overlaps(self,gff):
+        #print "%d %d %d %d"%(self.qstart,self.qend,gff.qstart,gff.qend)
+        if not (self.qend < gff.qstart or
+                self.qstart > gff.qend):
+            return True
+        else:
+            return False
+
     def __str__(self):
 	
 	str = "%s\t%s\t%s\t%d\t%d\t%f\t%s\t%s\t%s\t%d\t%d\t%d\t%d\t%s\t%s\t%f\n"%(self.qid,self.type1,self.type2,self.qstart,self.qend,self.score,self.strand,self.phase,self.hid,self.hstart,self.hend,self.qlen,self.hlen,self.qseq,self.hseq,self.pid) 

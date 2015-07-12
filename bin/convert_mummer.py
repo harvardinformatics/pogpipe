@@ -160,6 +160,12 @@ def main(args):
 
     line = fh.readline()
 
+    id1  = None
+    id2  = None
+    len1 = None
+    len2 = None
+
+
     while line != "":   # Can't use for line in fh: because we read the alignment in chunks
 
         lnum = lnum + 1
@@ -205,6 +211,8 @@ def main(args):
 
                 print "IDs %s %s %d %d"%(id1,id2,len1,len2)
 
+            else:
+                print "PArsing %s"%line
                 """ The four digits are the start and end in the reference sequence respectively and the start and end in the query sequence respectively. 
 
                 These coordinates are always measured in DNA bases regardless of the alignment data type. 
@@ -216,14 +224,10 @@ def main(args):
                 
                 An example header might look like: 5198 22885 5389 23089 20 20 0  """
 
-                tmpline  = fh.readline()
-                tmpline  = tmpline.rstrip('\n')
-                tmpff    = tmpline.split(' ')
-
-                rstart   = int(tmpff[0])
-                rend     = int(tmpff[1])
-                qstart   = int(tmpff[2])
-                qend     = int(tmpff[3])
+                rstart   = int(ff[0])
+                rend     = int(ff[1])
+                qstart   = int(ff[2])
+                qend     = int(ff[3])
 
                 if rend < rstart:
                     qstrand = -1
@@ -235,15 +239,15 @@ def main(args):
                 else:
                     hstrand = 1
 
-                errors   = int(tmpff[4])
-                simerrs  = int(tmpff[5])
-                nonalpha = int(tmpff[6])
+                errors   = int(ff[4])
+                simerrs  = int(ff[5])
+                nonalpha = int(ff[6])
                 
                 if id1 not in refseqs:
-                    raise Exception("Can't find reference sequence [%s] in ref file [%s]"%(id1,reffile))
+                    raise Exception("Can't find reference sequence [%s] in ref file [%s]"%(id1,args.reffile))
 
                 if id2 not in qryseqs:
-                    raise Exception("Can't find query sequence [%s] in query file [%s]"%(id2,queryfile))
+                    raise Exception("Can't find query sequence [%s] in query file [%s]"%(id2,args.queryfile))
                 rseq = refseqs[id1]
                 qseq = qryseqs[id2]
         
@@ -346,10 +350,17 @@ def main(args):
             #for h in g.hitattr:
             #    print "%s %s"%(h,g.hitattr[h])
 
+            found = False
+
             if id in alns:
                 for tmpgff in alns[id]:
-                    print "Seq qstart/end %d %d"%(tmpgff.qstart,tmpgff.qend)
 
+                    if g.overlaps(tmpgff):
+                        print "Seq qstart/end %d %d"%(tmpgff.qstart,tmpgff.qend)
+                        found = True
+            
+            if not found:
+                print "ERROR: No align"
 
         #for (seq1,seq2) in alns[g.qid]:
          #   print "%s - %s"%( seq1['id'],seq2['id'])
