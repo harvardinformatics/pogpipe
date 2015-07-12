@@ -1,11 +1,24 @@
 from argparse  import ArgumentParser
 
+from datamodel.factory.GFFFactory import GFFFactory
+from datamodel.factory.FastaFile  import FastaFile
+from datamodel.Feature            import Feature
+
 import importlib
 import logging
 import os
 import sys
 import csv
 import pprint
+
+
+"""
+
+Notes - need to turn the alignments into gffs - then need to overlap the annotation gffs with the alignment gffs
+
+
+"""
+
 
 """
 *** .delta OUTPUT ***   
@@ -103,6 +116,23 @@ def main(args):
 
     ref = FastaFile(args.reffile)
     qry = FastaFile(args.queryfile)
+    
+    gff = GFFFactory(args.gfffile)
+
+    g   = gff.nextGFF()
+
+    gffs = {}
+
+    while g is not None:
+
+        if g.type2 == "CDS":
+            #print "QID %s %s"%(g.qid,g.type2)
+            if g.qid not in gffs:
+                gffs[g.qid] = []
+
+            gffs[g.qid].append(g)
+
+        g = gff.nextGFF()
 
     print ref
     print qry
@@ -195,6 +225,16 @@ def main(args):
                 qstart   = int(tmpff[2])
                 qend     = int(tmpff[3])
 
+                if rend < rstart:
+                    qstrand = -1
+                else:
+                    qstrand = 1
+
+                if qend < qstart:
+                    hstrand = -1
+                else:
+                    hstrand = 1
+
                 errors   = int(tmpff[4])
                 simerrs  = int(tmpff[5])
                 nonalpha = int(tmpff[6])
@@ -272,16 +312,47 @@ def main(args):
                 if id1 not in alns:
                     alns[id1] = []
 
-                alns[id1].append([seq1,seq2])
+                tmpgff = Feature()
+
+                tmpgff.qid    = id1
+                tmpgff.qstart = rstart
+                tmpgff.qend   = rend
+
+                print "Strand %d %d"%(qstrand,hstrand)
+
+                tmpgff.hitattr['qseq'] = seq1
+                tmpgff.hitattr['hseq'] = seq2
+                tmpgff.hitattr['hid']  = id1
+
+                #alns[id1].append([seq1,seq2])
+                alns[id1].append(tmpgff)
 
         line = fh.readline()
 
     
     for id in alns:
         print id
-        for (seq1,seq2) in alns[id]:
-            print "%s - %s"%( seq1['id'],seq2['id'])
+        for gff in alns[id]:
+            print "%s - %s"%( tmpgff.qid,tmpgff.hitattr['hid'])
 
+
+    
+    for id in gffs:
+        print id
+        for g in gffs[id]:
+
+            print "GFF %s %s %d %d"%(g.qid,g.hid,g.qstart,g.qend)
+
+            #for h in g.hitattr:
+            #    print "%s %s"%(h,g.hitattr[h])
+
+            if id in alns:
+                for tmpgff in alns[id]:
+                    print "Seq qstart/end %d %d"%(tmpgff.qstart,tmpgff.qend)
+
+
+        #for (seq1,seq2) in alns[g.qid]:
+         #   print "%s - %s"%( seq1['id'],seq2['id'])
 
 def prettyPrint(seqs):
 
@@ -357,6 +428,7 @@ if __name__ == '__main__':
     parser.add_argument('-d','--deltafile'   , help='The mummer delta output file .delta')
     parser.add_argument('-r','--reffile'     , help="The input reference fasta file")
     parser.add_argument('-q','--queryfile'   , help="The input query fasta file")
+    parser.add_argument('-g','--gfffile'     , help="The protein gff file")
     
     args = parser.parse_args()
 
