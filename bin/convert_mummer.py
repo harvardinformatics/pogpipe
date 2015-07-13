@@ -12,6 +12,27 @@ import csv
 import pprint
 
 
+standardCodonTable = {'name': 'Standard',
+                      'alt_name': 'SGC0', 
+                      'id': 1,
+                      'table': {
+        'TTT': 'F', 'TTC': 'F', 'TTA': 'L', 'TTG': 'L', 'TCT': 'S',
+        'TCC': 'S', 'TCA': 'S', 'TCG': 'S', 'TAT': 'Y', 'TAC': 'Y',
+        'TGT': 'C', 'TGC': 'C', 'TGG': 'W', 'CTT': 'L', 'CTC': 'L',
+        'CTA': 'L', 'CTG': 'L', 'CCT': 'P', 'CCC': 'P', 'CCA': 'P',
+        'CCG': 'P', 'CAT': 'H', 'CAC': 'H', 'CAA': 'Q', 'CAG': 'Q',
+        'CGT': 'R', 'CGC': 'R', 'CGA': 'R', 'CGG': 'R', 'ATT': 'I',
+        'ATC': 'I', 'ATA': 'I', 'ATG': 'M', 'ACT': 'T', 'ACC': 'T',
+        'ACA': 'T', 'ACG': 'T', 'AAT': 'N', 'AAC': 'N', 'AAA': 'K',
+        'AAG': 'K', 'AGT': 'S', 'AGC': 'S', 'AGA': 'R', 'AGG': 'R',
+        'GTT': 'V', 'GTC': 'V', 'GTA': 'V', 'GTG': 'V', 'GCT': 'A',
+        'GCC': 'A', 'GCA': 'A', 'GCG': 'A', 'GAT': 'D', 'GAC': 'D',
+        'GAA': 'E', 'GAG': 'E', 'GGT': 'G', 'GGC': 'G', 'GGA': 'G',
+        'GGG': 'G', },
+                      'stop_codons': ['TAA', 'TAG', 'TGA', ],
+                      'start_codons': ['TTG', 'CTG', 'ATG', ]
+                      }
+
 """
 
 Notes - need to turn the alignments into gffs - then need to overlap the annotation gffs with the alignment gffs
@@ -116,7 +137,6 @@ def main(args):
 
     ref = FastaFile(args.reffile)
     qry = FastaFile(args.queryfile)
-    
     gff = GFFFactory(args.gfffile)
 
     g   = gff.nextGFF()
@@ -133,9 +153,6 @@ def main(args):
             gffs[g.qid].append(g)
 
         g = gff.nextGFF()
-
-    print ref
-    print qry
 
     refseqs = {}
     qryseqs = {}
@@ -181,7 +198,7 @@ def main(args):
             if1 = ff[0]
             if2 = ff[1]
 
-            print "Input files [%s][%s]"%(if1,if2)
+            print "Input files [%s][%s]\n"%(if1,if2)
 
 
         elif lnum == 2:
@@ -209,10 +226,10 @@ def main(args):
                 len1 = int(ff[2])
                 len2 = int(ff[3])
 
-                print "IDs %s %s %d %d"%(id1,id2,len1,len2)
+                #print "IDs %s %s %d %d"%(id1,id2,len1,len2)
 
             else:
-                print "PArsing %s"%line
+                #print "Parsing %s"%line
                 """ The four digits are the start and end in the reference sequence respectively and the start and end in the query sequence respectively. 
 
                 These coordinates are always measured in DNA bases regardless of the alignment data type. 
@@ -229,6 +246,9 @@ def main(args):
                 qstart   = int(ff[2])
                 qend     = int(ff[3])
 
+                qstrand  = 1
+                hstrand  = 1
+
                 if rend < rstart:
                     qstrand = -1
                 else:
@@ -238,6 +258,8 @@ def main(args):
                     hstrand = -1
                 else:
                     hstrand = 1
+
+                #print "Strands %d %d"%(qstrand,hstrand)
 
                 errors   = int(ff[4])
                 simerrs  = int(ff[5])
@@ -311,7 +333,8 @@ def main(args):
                 seq2['seq'] = tmpqseq
 
 
-                print prettyPrint([seq1,seq2])
+                #if (seq1 != seq2):
+                #    print prettyPrint([seq1,seq2])
                 
                 if id1 not in alns:
                     alns[id1] = []
@@ -322,11 +345,13 @@ def main(args):
                 tmpgff.qstart = rstart
                 tmpgff.qend   = rend
 
-                print "Strand %d %d"%(qstrand,hstrand)
+                #print "Strand %d %d"%(qstrand,hstrand)
 
                 tmpgff.hitattr['qseq'] = seq1
                 tmpgff.hitattr['hseq'] = seq2
                 tmpgff.hitattr['hid']  = id1
+
+                tmpgff.hitattr['insertpos'] = insertpos
 
                 #alns[id1].append([seq1,seq2])
                 alns[id1].append(tmpgff)
@@ -334,36 +359,173 @@ def main(args):
         line = fh.readline()
 
     
-    for id in alns:
-        print id
-        for gff in alns[id]:
-            print "%s - %s"%( tmpgff.qid,tmpgff.hitattr['hid'])
+    #for id in alns:
+        #print id
+        #for gff in alns[id]:
+            #print "%s - %s"%( tmpgff.qid,tmpgff.hitattr['hid'])
 
 
-    
+    gnum = 1
+
     for id in gffs:
-        print id
         for g in gffs[id]:
 
-            print "GFF %s %s %d %d"%(g.qid,g.hid,g.qstart,g.qend)
+            outstr = []
+
+            name = g.hitattr['Name']
+            prod = g.hitattr['product']
+
 
             #for h in g.hitattr:
             #    print "%s %s"%(h,g.hitattr[h])
 
-            found = False
+            found    = False
+            foundgff = None
+            status   = "NEW"
 
             if id in alns:
                 for tmpgff in alns[id]:
 
                     if g.overlaps(tmpgff):
-                        print "Seq qstart/end %d %d"%(tmpgff.qstart,tmpgff.qend)
-                        found = True
+
+                        if tmpgff.contains(g):
+                            #print "Contained Seq qstart/end %d %d"%(tmpgff.qstart,tmpgff.qend)
+                            found    = True
+                            foundgff = tmpgff
+                        else:
+
+                            ostart = g.qstart
+                            oend   = g.qend
+
+                            if tmpgff.qstart > g.qstart:
+                                ostart = tmpgff.qstart
+                                
+                            if tmpgff.qend < g.qend:
+                                oend = tmpgff.qend
+
+                            frac = int(100*(oend-ostart+1)/(g.qend-g.qstart+1))
+
+                            status = "PARTALIGN"
+                            outstr.append("============1 Processing gene %d %s %s"%(gnum,name,prod))
+                            outstr.append("Contig coords from gff file %s %d-%d"%(g.qid,g.qstart,g.qend))
+                            outstr.append("Partial overlap of %d percent overlap coords are %d %d"%(frac,ostart,oend))
+
             
             if not found:
-                print "ERROR: No align"
+                if status == "NEW":
+                    status = "NOALIGN"
+                    outstr.append("============2 Processing gene %d %s %s"%(gnum,name,prod))
+                    outstr.append("Contig coords from gff file %s %d-%d %s %s"%(g.qid,g.qstart,g.qend,name,prod))
+                    outstr.append("ERROR: No align for %s %s qstart/end %d %d %s"%(name,tmpgff.qid,tmpgff.qstart,tmpgff.qend,prod))
+            else:
+                if qstrand == -1:
+                    status = "REVSTRAND"
+                    outstr.append("===========3 Processing gene %d %s %s"%(gnum,name,prod))
+                    outstr.append("Contig coords from gff file %s %d-%d %s %s"%(g.qid,g.qstart,g.qend,name,prod))
+                    outstr.append("ERROR: can't deal with reverse strand reference alignments")
+                else:
+                    gstrand = g.strand
+                    gstart  = g.qstart
+                    gend    = g.qend
 
+                    astrand = foundgff.strand
+                    astart  = foundgff.qstart
+                    aend    = foundgff.qend
+
+
+
+                        
+                    apos1 = findAlnPos(foundgff,gstart)
+                    apos2 = findAlnPos(foundgff,gend)
+                        
+                        
+                    if gstrand == 1:
+                        qseq = foundgff.hitattr['qseq']['seq'][apos1:apos2]
+                        hseq = foundgff.hitattr['hseq']['seq'][apos1:apos2]
+                    else:
+                        qseq = foundgff.hitattr['qseq']['seq'][apos1+1:apos2+1]
+                        hseq = foundgff.hitattr['hseq']['seq'][apos1+1:apos2+1]
+                        
+                        qseq = reverse_complement(qseq)
+                        hseq = reverse_complement(hseq)
+
+                    
+
+                    if qseq != hseq:
+                        status = "MUTATION"
+                        outstr.append("===========4 Processing gene %d %s %s"%(gnum,name,prod))
+
+
+                        #print "GFF %s %s %d %d %s %s"%(g.qid,g.hid,g.qstart,g.qend,name,prod)
+
+                        outstr.append("DNA alignment\n")
+                        tmpstr = prettyPrint([{'id': id1, 'seq': qseq},{'id': id2, 'seq': hseq}])
+                        tmpff = tmpstr.split('\n')
+                        for f in tmpff:
+                            outstr.append(f)
+
+                        qpep = translate(qseq)
+                        hpep = translate(hseq)
+
+                        tmpstr = prettyPrint([{'id': id1, 'seq': qpep},{'id': id2, 'seq': hpep}])
+                        outstr.append("PEP alignment\n")
+                        tmpff = tmpstr.split('\n')
+                        for f in tmpff:
+                            outstr.append(f)
+
+
+
+
+                        #print "GFF start-end strand %d-%d %d %s %s"%(gstart,gend,gstrand,name,prod)
+                        #print "ALN start-end strand %d-%d %d %s %s"%(astart,aend,astrand,name,prod)
+
+                        #print "POS %d %d",(apos1,apos2)
+                    
+                        #print "QSEQ %s"%qseq
+                        #print "HSEQ %s"%hseq
+                            
+                            
+                        #print "QPEP %s"%qpep
+                        #print "HPEP %s"%hpep
+                    else:
+                        status = "IDENTICAL"
+                        outstr.append("============5 Processing gene %d %s %s"%(gnum,name,prod))
+                        outstr.append("NO CHANGE for this alignment %s %s %s"%(tmpgff.qid,name,prod))
+        
+            for i in outstr:
+                print "%-15s %s"%(status,i)
+            print "\n"
+            gnum = gnum+ 1
         #for (seq1,seq2) in alns[g.qid]:
          #   print "%s - %s"%( seq1['id'],seq2['id'])
+
+
+def findAlnPos(gff,pos):
+
+    i = 0
+
+    seq1 = gff.hitattr['qseq']['seq']
+    seq2 = gff.hitattr['hseq']['seq']
+    
+    strand = gff.strand
+    tmppos = gff.qstart -1
+
+    """ Need to have hpos here """
+
+    while i < len(seq1):
+
+        c1 = seq1[i]
+        c2 = seq2[i]
+
+        if c1 != '-':
+            tmppos = tmppos + 1
+            
+        if tmppos == pos:
+            return i
+
+        i = i + 1
+
+    return len(seq1)-1
 
 def prettyPrint(seqs):
 
@@ -407,6 +569,31 @@ def prettyPrint(seqs):
 
     return outstr
 
+
+def translate(str):
+
+    i = 0
+
+    pep = ""
+
+    while i < len(str)-2:
+
+        codon = str[i:i+3]
+
+        #print "CODON %s"%(codon)
+
+        if codon in standardCodonTable['table']:
+            res = standardCodonTable['table'][codon]
+        else:
+            res = "X"
+
+        #print "RES %s"%res
+
+        pep = pep + res
+
+        i = i + 3
+
+    return pep
 def reverse_complement(seqstr):
 
     comps = {}

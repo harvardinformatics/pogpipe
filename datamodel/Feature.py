@@ -43,6 +43,14 @@ class Feature(object):
        
         self.hitattr               = {}
 
+
+    def contains(self,gff):
+
+        if self.qstart <= gff.qstart and self.qend >= gff.qend:
+            return True
+        else:
+            return False
+        
     def overlaps(self,gff):
         #print "%d %d %d %d"%(self.qstart,self.qend,gff.qstart,gff.qend)
         if not (self.qend < gff.qstart or
