@@ -49,3 +49,9 @@ class Mummer(Analysis):
 
         return self.commands
     
+
+    def parseDeltaFile(self,file,reffile,qryfile):
+
+        if not FileUtils.fileExists(file):
+            raise Exception("Can't parse Mummer delta file.  File [%s] doesn't exist"%file)
+

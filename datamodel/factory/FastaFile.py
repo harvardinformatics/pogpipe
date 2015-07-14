@@ -401,6 +401,21 @@ class FastaFile(object):
        return outstr
 
     @staticmethod
+    def getSequenceDict(file):
+
+        ff = FastaFile(file)
+
+        seqs = {}
+
+        seq = ff.nextSeq()
+
+        while seq is not None:
+            seqs[seq['id']] = seq
+            seq = ff.nextSeq()
+
+        return seqs
+
+    @staticmethod
     def toString(seqs):
 
        str    = []
