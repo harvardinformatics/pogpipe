@@ -333,8 +333,8 @@ def main(args):
                 seq2['seq'] = tmpqseq
 
 
-                #if (seq1 != seq2):
-                #    print prettyPrint([seq1,seq2])
+                if (seq1 != seq2  and id1 == "GG739696.1"):
+                    print prettyPrint([seq1,seq2])
                 
                 if id1 not in alns:
                     alns[id1] = []
@@ -613,6 +613,8 @@ def reverse_complement(seqstr):
 
         if ch in comps:
             newstr = newstr +  comps[ch]
+        else:
+            newstr = newstr + ch
 
         i = i + 1
 
