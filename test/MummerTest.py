@@ -60,5 +60,14 @@ class MummerTest(unittest.TestCase):          # Class with unitttest.TestCase as
         self.assertTrue(FileUtils.fileExists('../testout/mummer.delta'))
 
 
+    def tearDown(self):
+
+        deltafile = '../testout/mummer.delta'
+
+        if FileUtils.fileExists(deltafile):
+            os.remove(deltafile)
+            
+
+        
 if __name__ == "__main__":                           # And run the file
     unittest.main()   
