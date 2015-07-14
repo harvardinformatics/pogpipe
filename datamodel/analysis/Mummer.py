@@ -1,7 +1,8 @@
-from   datamodel.Analysis       import Analysis
-from   datamodel.FileUtils      import FileUtils
-from   subprocess               import Popen, PIPE
-from   config                   import settings
+from   datamodel.Analysis                 import Analysis
+from   datamodel.analysis.MummerDeltaFile import MummerDeltaFile
+from   datamodel.factory.FastaFile        import FastaFile
+from   datamodel.FileUtils                import FileUtils
+from   config                             import settings
 
 import os
 import re
@@ -50,8 +51,24 @@ class Mummer(Analysis):
         return self.commands
     
 
-    def parseDeltaFile(self,file,reffile,qryfile):
+    @staticmethod
+    def parseDeltaFile(deltafile,reffile,qryfile):
 
-        if not FileUtils.fileExists(file):
-            raise Exception("Can't parse Mummer delta file.  File [%s] doesn't exist"%file)
+        if not FileUtils.fileExists(deltafile):
+            raise Exception("Can't parse Mummer delta file.  File [%s] doesn't exist"%deltafile)
 
+        if not FileUtils.fileExists(reffile):
+            raise Exception("Can't parse Mummer delta file.  Reference fasta file [%s] doesn't exist"%reffile)
+
+        if not FileUtils.fileExists(qryfile):
+            raise Exception("Can't parse Mummer delta file.  Query fasta file [%s] doesn't exist"%qryfile)
+
+
+        refseqs = FastaFile.getSequenceDict(reffile)
+        qryseqs = FastaFile.getSequenceDict(qryfile)
+
+        tmpmdf     = MummerDeltaFile(deltafile,refseqs,qryseqs)
+
+        tmpmdf.parse()
+
+        return tmpmdf.alns
