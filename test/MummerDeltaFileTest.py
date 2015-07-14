@@ -35,10 +35,17 @@ class MummerTest(unittest.TestCase):          # Class with unitttest.TestCase as
 
         self.assertTrue(mdf)
 
-
         mdf.parse()
         
-        
+        alns = mdf.alns
+
+        self.assertTrue('GG739631.1' in alns)
+
+        idalns = alns['GG739631.1']
+
+        self.assertTrue(len(idalns) == 14)
+
+        self.assertTrue(idalns[13].qstart == 293765)
         
 
         

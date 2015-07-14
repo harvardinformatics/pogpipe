@@ -18,12 +18,12 @@ class Feature(object):
         self.type2                 = "feature"
 
         self.qid                   = None                  
-        self.qstart                = None
-        self.qend                  = None
+        self.qstart                = -1
+        self.qend                  = -1
         self.qdesc                 = None
         self.qseq                  = None
-        self.qlen                  = None
-        self.qcov                  = None
+        self.qlen                  = -1
+        self.qcov                  = -1
 
         self.score                 = 0
         self.frame                 = 0
@@ -32,11 +32,11 @@ class Feature(object):
         self.pid                   = 0
 
         self.hid                   = None
-        self.hstart                = None
-        self.hend                  = None
+        self.hstart                = -1
+        self.hend                  = -1
         self.hseq                  = None
-        self.hlen                  = None
-        self.hcov                  = None
+        self.hlen                  = -1
+        self.hcov                  = -1
 
         self.qseq                  = None
         self.hseq                  = None
@@ -61,6 +61,6 @@ class Feature(object):
 
     def __str__(self):
 	
-	str = "%s\t%s\t%s\t%d\t%d\t%f\t%s\t%s\t%s\t%d\t%d\t%d\t%d\t%s\t%s\t%f\n"%(self.qid,self.type1,self.type2,self.qstart,self.qend,self.score,self.strand,self.phase,self.hid,self.hstart,self.hend,self.qlen,self.hlen,self.qseq,self.hseq,self.pid) 
+	str = "%s\t%s\t%s\t%d\t%d\t%f\t%s\t%s\t%s\t%d\t%d\t%d\t%d\t%s\t%s\t%f\t%s\t%s"%(self.qid,self.type1,self.type2,self.qstart,self.qend,self.score,self.strand,self.phase,self.hid,self.hstart,self.hend,self.qlen,self.hlen,self.qseq,self.hseq,self.pid,self.hitattr['qseq']['seq'],self.hitattr['hseq']['seq']) 
 
  	return str
