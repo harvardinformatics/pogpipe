@@ -74,6 +74,7 @@ class DBCreateTest(unittest.TestCase):          # Class with unitttest.TestCase 
             print key,value
 
         print obj[0].status
+        
     def tearDown(self):
         self.session.commit()
         self.session.close()
