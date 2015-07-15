@@ -5,7 +5,7 @@ from datetime                   import datetime
 
 from sqlalchemy                 import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm             import relationship
+from sqlalchemy.orm             import relationship,backref
 from sqlalchemy                 import create_engine
 from sqlalchemy.sql             import func 
 
@@ -40,6 +40,8 @@ class Analysis(Base):
     cores          = Column(Integer,     nullable=True)
     mempercore     = Column(Integer,     nullable=True)
 
+    input_files = relationship("AnalysisInputFile", order_by="AnalysisInputFile.id", backref="analysis")
+
 class AnalysisInputFile(Base):
 
     __tablename__ = 'analysis_input_file'
@@ -50,6 +52,8 @@ class AnalysisInputFile(Base):
     input_file_type    = Column(String(250),  nullable=False)
     input_file_rank    = Column(Integer,      nullable=False)
     date_created       = Column(DateTime,     default=datetime.utcnow)
+    
+#    analysis = relationship("Analysis",backref=backref('input_files', order_by=id))
 
 class AnalysisOutputFile(Base):
 
@@ -62,6 +66,8 @@ class AnalysisOutputFile(Base):
     output_file_rank   = Column(Integer,      nullable=False)
     date_created       = Column(DateTime,     default=datetime.utcnow)
 
+    analysis = relationship("Analysis",backref=backref('output_files', order_by=id))
+
 class AnalysisExpectedOutputFile(Base):
 
     __tablename__ = 'analysis_expected_output_file'
@@ -72,6 +78,9 @@ class AnalysisExpectedOutputFile(Base):
     expected_output_file_type   = Column(String(250),  nullable=False)
     expected_output_file_rank   = Column(Integer,      nullable=False)
     date_created                = Column(DateTime,     default=datetime.utcnow)
+
+
+    analysis = relationship("Analysis",backref=backref('expected_output_files', order_by=id))
 
 class AnalysisStatus(Base):
 
@@ -84,6 +93,8 @@ class AnalysisStatus(Base):
     status_rank             = Column(Integer,      nullable=False)
     date_created            = Column(DateTime,     default=datetime.utcnow)
 
+    analysis = relationship("Analysis",backref=backref('status', order_by=id))
+
 class AnalysisCommand(Base):
 
     __tablename__ = 'analysis_command'
@@ -95,9 +106,11 @@ class AnalysisCommand(Base):
     command_rank            = Column(Integer,      nullable=False)
     date_created            = Column(DateTime,     default=datetime.utcnow)
 
+    analysis = relationship("Analysis",backref=backref('commands', order_by=id))
+
 class AnalysisOutputString(Base):
 
-    __tablename__ = 'analysis_expected_output_string'
+    __tablename__ = 'analysis_output_string'
 
     id                      = Column(Integer,      primary_key=True)
     analysis_id             = Column(Integer,      ForeignKey('analysis.id'))
@@ -105,6 +118,8 @@ class AnalysisOutputString(Base):
     output_string_type      = Column(String(250),  nullable=False)
     output_string_rank      = Column(Integer,      nullable=False)
     date_created            = Column(DateTime,     default=datetime.utcnow)
+
+    analysis = relationship("Analysis",backref=backref('output_strings', order_by=id))
 
 class AnalysisSummaryValue(Base):
 
@@ -117,6 +132,8 @@ class AnalysisSummaryValue(Base):
     summary_value_rank      = Column(Integer,      nullable=False)
     date_created            = Column(DateTime,     default=datetime.utcnow)
 
+    analysis = relationship("Analysis",backref=backref('summary_values', order_by=id))
+
 class AnalysisSlurmValue(Base):
 
     __tablename__ = 'analysis_slurm_value'
@@ -128,7 +145,7 @@ class AnalysisSlurmValue(Base):
     slurm_value_rank        = Column(Integer,      nullable=False)
     date_created            = Column(DateTime,     default=datetime.utcnow)
 
-
+    analysis = relationship("Analysis",backref=backref('slurm_values', order_by=id))
 #engine = create_engine('sqlite:///)
 #engine.echo = True
 

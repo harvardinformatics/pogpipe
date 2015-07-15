@@ -26,8 +26,8 @@ class DBCreateTest(unittest.TestCase):          # Class with unitttest.TestCase 
 
     def setUp(self):
 
-        self.engine = create_engine('sqlite:///test.db')
-       # self.engine.echo = True
+        self.engine      = create_engine('sqlite:///test.db')
+        self.engine.echo = True
 
         Base.metadata.create_all(self.engine)
 
@@ -39,23 +39,36 @@ class DBCreateTest(unittest.TestCase):          # Class with unitttest.TestCase 
     def testCreateAnalysis(self):
         
         obj1 = Analysis(name="pog1")
-        obj2 = Analysis(name="pog2")
+        obj2 = Analysis(name="pog2",currentstatus="COMPLETE")
+        obj3 = Analysis(name="pog3")
 
 
         self.session.add(obj1)
         self.session.add(obj2)
+        self.session.add(obj3)
 
         self.session.commit()
 
         self.assertTrue(obj1.id   == 1)
         self.assertTrue(obj2.name == "pog2")
+        self.assertTrue(obj2.currentstatus == "COMPLETE")
 
         obj = self.session.query(Analysis).filter_by(name='pog1').all()
 
         self.assertTrue(len(obj) ==1)
         self.assertTrue(obj[0].id ==1)
 
+        self.assertTrue(obj[0].currentstatus == "NEW")
 
+
+        obj = self.session.query(Analysis).filter_by(currentstatus='NEW').all()
+
+        self.assertTrue(len(obj) ==2)
+
+        for key,value in obj[0].__dict__.items():
+            print key,value
+
+        print obj[0].status
     def tearDown(self):
         self.session.commit()
         self.session.close()
