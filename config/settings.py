@@ -13,6 +13,7 @@ TOOLDIR              = POGPIPEROOT + "tools/" + OSNAME + "/"
 DBNAME               = POGPIPEROOT + "pogpipe.db"
 
 OUTPUT_DIR           = '/Users/mclamp/git/harvardinformatics/pogpipe/testout/'
+WORKING_DIR          = POGPIPEROOT + "working_dir/"
 #OUTPUT_DIR           = '/n/regal/informatics/PogPipe/testout/'
 #OUTPUT_DIR           = '/home/mclamp/git/pogpipe/testout/'
 

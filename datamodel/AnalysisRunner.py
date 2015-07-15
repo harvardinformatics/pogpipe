@@ -3,9 +3,9 @@ import sys
 import os.path
 import logging
 
-from   subprocess      import Popen, PIPE
-from   datamodel       import Analysis
-from   config          import settings
+from   subprocess                  import Popen, PIPE
+from   datamodel.database.DB       import Analysis
+from   config                      import settings
 
 # Checking executable bit on binaries
 # Adding output directory as well as working directory
@@ -26,7 +26,7 @@ class AnalysisRunner(object):
 
         logging.info(" ========> AnalysisRunner for %20s called run"%(self.analysis.name))
 
-        self.analysis.output_str = []
+        self.analysis.output_strings = []
 
         # We may want to put the output into an array for multiple commands.
 
@@ -34,8 +34,8 @@ class AnalysisRunner(object):
 
         logging.info(" ========> AnalysisRunner for %20s called run for %s commands"%(self.analysis.name,len(self.analysis.commands)))
 
-        for cmd in cmds:
-
+        for cmdobj in cmds:
+            cmd = cmdobj.command
             logging.info(" ========> AnalysisRunner for %20s running comand %s"%(self.analysis.name,cmd))
 
             # Open a pipe
@@ -56,17 +56,17 @@ class AnalysisRunner(object):
                 #print "ERR - %s"%err
 
                 if out != '':
-                    self.analysis.output_str.append(out)
+                    self.analysis.addOutputString(out)
                     sys.stdout.flush()
 
                 if err != '':
-                    self.analysis.output_str.append(err)
+                    self.analysis.addOutputString(err)
                     sys.stderr.flush()
 
         logging.info(" ========> AnalysisRunner for %20s finished command: Output is"%(self.analysis.name))
 
-        for tmp in self.analysis.output_str:
-            tmp2 = tmp.split("\n")
+        for tmp in self.analysis.output_strings:
+            tmp2 = tmp.output_string.split("\n")
 
             for t in tmp2:
                 logging.info(" ========> Analysis %20s Output %s"%(self.analysis.name,t))

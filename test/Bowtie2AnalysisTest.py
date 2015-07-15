@@ -23,9 +23,10 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
     def testRun(self):
 
         self.ana = AnalysisFactory.createAnalysisFromModuleName("Bowtie2")
-
+        
         self.ana.setInputFiles(self.input_files,self.input_types)
-
+        self.ana.init()  #  This does the defaults but should be in the constructor
+        
         self.ana.param = self.param
 
         self.assertTrue(len(self.input_files) == 1)
@@ -43,7 +44,7 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
         self.ana.postProcessOutput()
 
-        output_str = self.ana.output_str
+        output_str = self.ana.output_strings
 
         print len(output_str)
 

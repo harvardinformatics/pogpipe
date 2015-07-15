@@ -1,25 +1,18 @@
 import sys
 
-from   datamodel.Analysis       import Analysis
+from   datamodel.database.DB   import Analysis
 
 class DirectoryListAnalysis(Analysis):
-    """Toy class that lists the contencts of a directory"""
+    """Toy class that lists the contents of a directory"""
 
     name = "DirectoryList"
 
     def __init__(self):
-        super(DirectoryListAnalysis,self).__init__(self.name)
+        super(DirectoryListAnalysis,self).__init__()
 
     def getCommands(self):
-        cmds = []
+        
+        return map(lambda x: "ls " + x.input_file, self.input_files)
 
-        for input in self.input_files:
-            cmd = "ls " + input
-            
-            cmds.append(cmd)
-
-        self.commands = cmds
-
-        return cmds
 
 

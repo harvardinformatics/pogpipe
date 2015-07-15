@@ -1,4 +1,4 @@
-from   datamodel.Analysis       import Analysis
+from   datamodel.database.DB    import Analysis, AnalysisExpectedOutputFile, AnalysisCommand
 from   datamodel.FileUtils      import FileUtils
 from   config                   import settings
 
@@ -23,7 +23,7 @@ class Bowtie2Analysis(Analysis):
 
     def __init__(self):
 
-        super(Bowtie2Analysis,self).__init__(self.name)
+        super(Bowtie2Analysis,self).__init__()
 
     def getCommands(self):
 
@@ -36,18 +36,18 @@ class Bowtie2Analysis(Analysis):
         self.expected_output_files = []
         self.temp_output_files     = []
 
-        outdir = self.getOutputDirectory()
-        tmpdir = self.getWorkingDirectory()
+        outdir = self.output_dir
+        tmpdir = self.working_dir
 
         btbin  = self.bowtiebindir   + self.bowtiebinname
         stbin  = self.samtoolsbindir + self.samtoolsbinname
 
         self.calculateSpaceNeeded()
 
-        if self.checkBinary(btbin) == False:
+        if FileUtils.fileExists(btbin) == False:
             raise Exception("Binary file [%s] doesn't exist = can't continue" % btbin)
 
-        if self.checkBinary(stbin) == False:
+        if FileUtils.fileExists(stbin) == False:
             raise Exception("Binary file [%s] doesn't exist = can't continue" % stbin)
 
         if self.checkInputFiles() == False:
@@ -55,8 +55,8 @@ class Bowtie2Analysis(Analysis):
 
         self.checkDiskSpace()
 
-        for f in self.input_files:
-
+        for fobj in self.input_files:
+            f = fobj.input_file
             try:
 
                 if f.endswith(".gz"):
@@ -90,11 +90,11 @@ class Bowtie2Analysis(Analysis):
                 logging.info(" ========> Analysis %20s command 3 : %s" % (self.name,command2))
 
                # self.expected_output_files.append(fstub + ".sam")
-                self.expected_output_files.append(fstub + ".bam")
-                self.expected_output_files.append(fstub + ".bam.bai")
+                self.expected_output_files.append(AnalysisExpectedOutputFile(expected_output_file=fstub + ".bam"))
+                self.expected_output_files.append(AnalysisExpectedOutputFile(expected_output_file=fstub + ".bam.bai"))
                 
-                self.commands.append(command1)
-                self.commands.append(command2)
+                self.commands.append(AnalysisCommand(command=command1))
+                self.commands.append(AnalysisCommand(command=command2))
                 #self.commands.append(command3)
                 
             except Exception as e:
@@ -115,7 +115,8 @@ class Bowtie2Analysis(Analysis):
 
         tmpdat = {}
         
-        for str1 in self.output_str:
+        for str1obj in self.output_strings:
+            str1 = str1obj.output_string
             tmpstr = str1.split("\n")
 
             for str in tmpstr:
@@ -154,7 +155,7 @@ class Bowtie2Analysis(Analysis):
         output_size = 0
 
         for f in self.input_files:
-           output_size += os.path.getsize(f)
+           output_size += os.path.getsize(f.input_file)
 
         self.minimum_space_needed = 3*output_size
 

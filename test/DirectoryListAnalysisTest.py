@@ -16,9 +16,8 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
     
     def setUp(self):
 
-        self.inputs = []
-        self.inputs.append("/tmp");
-
+        self.inputs = ['/tmp']
+        
         self.anaobj = DirectoryListAnalysis()
 
 
@@ -30,7 +29,7 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
         self.anaobj.setInputFiles(self.inputs,['dir'])
 
-        tmpinputs = self.anaobj.getInputFiles()
+        tmpinputs = self.anaobj.input_files
 
         self.assertEqual(len(tmpinputs),len(self.inputs)) # Assertion that the test framework collates
 
@@ -43,7 +42,10 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
         self.runner.run()
 
         
-        self.assertTrue(len(self.anaobj.output_str) > 0)
+        tmpstr = self.anaobj.getOutputStrings()
+        
+        print tmpstr
+        self.assertTrue(len(self.anaobj.getOutputStrings()) > 0)
 
 
     def testGetOutput(self):
@@ -53,7 +55,7 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
         self.runner.run()
 
-        out = self.runner.analysis.output_str
+        out = self.runner.analysis.getOutputStrings()
 
         self.assertTrue(len(out)>0)
 

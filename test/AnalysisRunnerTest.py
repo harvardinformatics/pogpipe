@@ -8,7 +8,7 @@ scriptdir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(scriptdir + "/../")
 
 from datamodel.AnalysisRunner          import AnalysisRunner
-from datamodel.Analysis                import Analysis
+from datamodel.database.DB             import Analysis
 from datamodel.factory.AnalysisFactory import AnalysisFactory
 
 

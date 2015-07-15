@@ -34,6 +34,10 @@ class FileUtils(object):
     @staticmethod
     def getDiskUsage(dir):
         
+        
+        if dir is None or not os.path.isdir(dir):
+            raise Exception("Can't check disk usage. Directory [%s] doesn't exist"%dir)
+        
         st = os.statvfs(dir)
 
         free  = st.f_bavail * st.f_frsize
