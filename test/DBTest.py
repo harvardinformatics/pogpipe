@@ -10,10 +10,11 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../")
 from datamodel.FileUtils        import FileUtils
 from config                     import settings
 
-from datamodel.database.DB      import init_database
-from datamodel.database.DB      import Analysis, AnalysisInputFile, AnalysisOutputFile, AnalysisExpectedOutputFile 
-from datamodel.database.DB      import AnalysisStatus,AnalysisCommand,AnalysisOutputString,AnalysisSummaryValue,AnalysisSlurmValue
-from sqlalchemy.orm             import sessionmaker
+from datamodel.database.AnalysisUtils import AnalysisUtils
+from datamodel.database.DB            import init_database
+from datamodel.database.DB            import Analysis, AnalysisInputFile, AnalysisOutputFile, AnalysisExpectedOutputFile 
+from datamodel.database.DB            import AnalysisStatus,AnalysisCommand,AnalysisOutputString,AnalysisSummaryValue,AnalysisSlurmValue
+from sqlalchemy.orm                   import sessionmaker
 
 
 
@@ -47,7 +48,7 @@ class DBCreateTest(unittest.TestCase):          # Class with unitttest.TestCase 
         obj1.input_files.append(if1)
         obj1.input_files.append(if2)
         
-        obj2.setInputFiles(input_files,input_types)
+        AnalysisUtils.setInputFiles(obj1,input_files,input_types)
         
         self.session.add(obj1)
         self.session.add(obj2)

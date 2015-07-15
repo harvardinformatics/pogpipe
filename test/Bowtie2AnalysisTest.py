@@ -7,7 +7,7 @@ scriptdir = os.path.dirname(os.path.realpath(__file__))
 
 sys.path.append(scriptdir + "/../")
 
-
+from   datamodel.database.AnalysisUtils   import AnalysisUtils
 from   datamodel.AnalysisRunner           import AnalysisRunner
 from   datamodel.Bowtie2Analysis          import Bowtie2Analysis
 from   datamodel.factory.AnalysisFactory  import AnalysisFactory
@@ -24,7 +24,7 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
         self.ana = AnalysisFactory.createAnalysisFromModuleName("Bowtie2")
         
-        self.ana.setInputFiles(self.input_files,self.input_types)
+        AnalysisUtils.setInputFiles(self.ana,self.input_files,self.input_types)
         self.ana.init()  #  This does the defaults but should be in the constructor
         
         self.ana.param = self.param

@@ -9,7 +9,8 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../")
 
 from config                    import    settings
 from datamodel.FileUtils       import    FileUtils
-from datamodel.database.DB     import Analysis, init_database
+from datamodel.database.DB     import    Analysis, init_database
+from datamodel.database.AnalysisUtils import AnalysisUtils
 from sqlalchemy.orm            import sessionmaker
 
 if FileUtils.fileExists(settings.TESTLOGFILE):   os.remove(settings.TESTLOGFILE)
@@ -53,7 +54,7 @@ class DBAnalysisTest(unittest.TestCase):          # Class with unitttest.TestCas
         obj2 = Analysis(name="pog2",currentstatus="COMPLETE")
         obj3 = Analysis(name="pog3")
 
-        obj1.setInputFiles(self.input_files,self.input_types)
+        AnalysisUtils.setInputFiles(obj1,self.input_files,self.input_types)
         obj1.output_dir = "/tmp"
         obj1.working_dir = "/tmp"
         obj1.init()
@@ -64,7 +65,7 @@ class DBAnalysisTest(unittest.TestCase):          # Class with unitttest.TestCas
         obj2 = Analysis(name="pog2",currentstatus="COMPLETE")
         obj3 = Analysis(name="pog3")
 
-        obj1.setInputFiles(self.input_files,self.input_types)
+        AnalysisUtils.setInputFiles(obj1,self.input_files,self.input_types)
         
         self.session.add(obj1)
         self.session.add(obj2)

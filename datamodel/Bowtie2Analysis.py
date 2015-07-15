@@ -1,4 +1,5 @@
 from   datamodel.database.DB    import Analysis, AnalysisExpectedOutputFile, AnalysisCommand
+from   datamodel.database.AnalysisUtils import AnalysisUtils
 from   datamodel.FileUtils      import FileUtils
 from   config                   import settings
 
@@ -50,10 +51,10 @@ class Bowtie2Analysis(Analysis):
         if FileUtils.fileExists(stbin) == False:
             raise Exception("Binary file [%s] doesn't exist = can't continue" % stbin)
 
-        if self.checkInputFiles() == False:
+        if AnalysisUtils.checkInputFiles(self) == False:
             raise Exception("Input files [%s] don't exist = can't continue"%(self.input_files))
 
-        self.checkDiskSpace()
+        AnalysisUtils.checkDiskSpace(self)
 
         for fobj in self.input_files:
             f = fobj.input_file
@@ -104,7 +105,7 @@ class Bowtie2Analysis(Analysis):
         return self.commands
 
     def postProcessOutput(self):
-        super(Bowtie2Analysis,self).postProcessOutput()
+        AnalysisUtils.postProcessOutput(self)
 
         #3 reads; of these:
         #  3 (100.00%) were unpaired; of these:

@@ -6,7 +6,7 @@ import logging
 from   subprocess                  import Popen, PIPE
 from   datamodel.database.DB       import Analysis
 from   config                      import settings
-
+from   datamodel.database.AnalysisUtils import AnalysisUtils
 # Checking executable bit on binaries
 # Adding output directory as well as working directory
 # Ability to get input file stub/dir
@@ -56,11 +56,11 @@ class AnalysisRunner(object):
                 #print "ERR - %s"%err
 
                 if out != '':
-                    self.analysis.addOutputString(out)
+                    AnalysisUtils.addOutputString(self.analysis,out)
                     sys.stdout.flush()
 
                 if err != '':
-                    self.analysis.addOutputString(err)
+                    AnalysisUtils.addOutputString(self.analysis,err)
                     sys.stderr.flush()
 
         logging.info(" ========> AnalysisRunner for %20s finished command: Output is"%(self.analysis.name))
