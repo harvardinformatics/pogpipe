@@ -14,32 +14,6 @@ class Feature(object):
 
     def __init__(self):
 
-<<<<<<< HEAD
-        self.features = []
-        self.qid                   = None                  
-        self.qstart                = None
-        self.qend                  = None
-        self.qdesc                 = None
-        self.qseq                  = None
-        self.qlen                  = None
-        self.qcov                  = None
-
-        self.score                 = None
-        self.frame                 = None
-        self.strand                = None
-        self.pid                   = None
-
-        self.hid                   = None
-        self.hstart                = None
-        self.hend                  = None
-        self.hseq                  = None
-        self.hlen                  = None
-        self.hcov                  = None
-
-        self.qseq                  = None
-        self.hseq                  = None
-        
-=======
         self.type1                 = "feature"
         self.type2                 = "feature"
 
@@ -88,4 +62,3 @@ class Feature(object):
 	str = "%s\t%s\t%s\t%d\t%d\t%f\t%s\t%s\t%s\t%d\t%d\t%d\t%d\t%s\t%s\t%f"%(self.qid,self.type1,self.type2,self.qstart,self.qend,self.score,self.strand,self.phase,self.hid,self.hstart,self.hend,self.qlen,self.hlen,self.qseq,self.hseq,self.pid)
 
  	return str
->>>>>>> f24e99b9a5c4fcc115203ebd7e12b8a08a35b53d

@@ -35,6 +35,8 @@ class MummerTest(unittest.TestCase):          # Class with unitttest.TestCase as
 
         commands = mummer.getCommands()
 
+        print commands
+
         self.assertTrue(len(commands) == 1)
 
         self.assertTrue(commands[0].index('tools/macosx/MUMmer3.23/nucmer --maxgap=500 --mincluster=100') > 0)

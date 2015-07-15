@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+
 #-------------------------------------------------------------------------------
 #   Programmer: Adam M Phillippy, The Institute for Genomic Research
 #         File: nucmer
@@ -15,14 +16,22 @@
 #
 #-------------------------------------------------------------------------------
 
-use lib "/Users/mclamp/Downloads/MUMmer3.23/scripts";
+use Cwd 'abs_path';
+use File::Basename;
+
+BEGIN {
+  my $dir = dirname(dirname(abs_path($0)));
+  use FindBin;              
+  use lib "$FindBin::Bin/scripts";
+}
+
 use Foundation;
 use File::Spec::Functions;
 use strict;
 
-my $AUX_BIN_DIR = "/Users/mclamp/Downloads/MUMmer3.23/aux_bin";
-my $BIN_DIR = "/Users/mclamp/Downloads/MUMmer3.23";
-my $SCRIPT_DIR = "/Users/mclamp/Downloads/MUMmer3.23/scripts";
+my $AUX_BIN_DIR = "$FindBin::Bin/aux_bin";
+my $BIN_DIR     = "$FindBin::Bin";
+my $SCRIPT_DIR  = "$FindBin::Bin/scripts";
 
 
 my $VERSION_INFO = q~
