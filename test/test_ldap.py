@@ -204,7 +204,7 @@ if __name__ =='__main__':
     print ldif
 
     try:
-        ld.ldap_conn.simple_bind_s("account@rc.domain",'Formula350!')
+        ld.ldap_conn.simple_bind_s("account@rc.domain",'xxxxxxxxxx')
     except ldap.LDAPError, error_message:
         print "Error connecting to LDAP server: %s" % error_message
         exit()

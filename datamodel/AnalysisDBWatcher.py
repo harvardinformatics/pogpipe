@@ -4,6 +4,10 @@ import time
 import logging
 import sqlite3
 
+scriptdir = os.path.dirname(os.path.realpath(__file__))
+
+sys.path.append(scriptdir + "/../")
+
 from   datetime                            import datetime
 from   config                              import settings
 from   argparse                            import ArgumentParser

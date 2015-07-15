@@ -4,7 +4,7 @@ import logging
 
 POGPIPEROOT          = '/Users/mclamp/git/harvardinformatics/pogpipe/'
 #POGPIPEROOT          = '/home/mclamp/git/pogpipe/'
-#POGPIPEROOT         = '/n/home_rc/mclamp/git/bitbucket/PogPipe/'
+#POGPIPEROOT          = '/n/home_rc/mclamp/git/bitbucket/PogPipe/'
 
 OSNAME               = "macosx"
 #OSNAME               = "centos6"
@@ -12,8 +12,8 @@ OSNAME               = "macosx"
 TOOLDIR              = POGPIPEROOT + "tools/" + OSNAME + "/"
 DBNAME               = POGPIPEROOT + "pogpipe.db"
 
-#OUTPUT_DIR           = '/n/regal/informatics/PogPipe/testout/'
 OUTPUT_DIR           = '/Users/mclamp/git/harvardinformatics/pogpipe/testout/'
+#OUTPUT_DIR           = '/n/regal/informatics/PogPipe/testout/'
 #OUTPUT_DIR           = '/home/mclamp/git/pogpipe/testout/'
 
 LOGFILE              = '/tmp/pogpipe_' + datetime.now().strftime("%Y-%m-%d")+'.log'
