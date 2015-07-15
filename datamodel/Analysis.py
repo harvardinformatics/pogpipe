@@ -65,7 +65,7 @@ class Analysis(object):
 
         self.temp_output_files     = []
 
-        self.init()
+        #self.init()
 
     def init(self):
         """ Function to set up any analysis specific variables """

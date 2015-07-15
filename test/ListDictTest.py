@@ -2,6 +2,10 @@ import os
 import sys
 import unittest
 
+scriptdir = os.path.dirname(os.path.realpath(__file__))
+
+sys.path.append(scriptdir + "/../")
+
 class ListDictTest(unittest.TestCase):
 
     def setUp(self):
