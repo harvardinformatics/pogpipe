@@ -17,7 +17,7 @@ if FileUtils.fileExists(settings.TESTDBNAME):
 settings.DBNAME = settings.TESTDBNAME
 
 
-from datamodel.database.DB      import Analysis
+from datamodel.database.DB      import Analysis, AnalysisInputFile
 from sqlalchemy.orm             import sessionmaker
 
 class DBCreateTest(unittest.TestCase):          # Class with unitttest.TestCase as arg - 
@@ -36,7 +36,13 @@ class DBCreateTest(unittest.TestCase):          # Class with unitttest.TestCase 
         obj2 = Analysis(name="pog2",currentstatus="COMPLETE")
         obj3 = Analysis(name="pog3")
 
-
+        if1 = AnalysisInputFile(input_file='pog1.fa',input_file_rank=1)
+        if2 = AnalysisInputFile(input_file='pog2.fa',input_file_rank=2)
+        
+        obj1.input_files.append(if1)
+        obj1.input_files.append(if2)
+        
+        
         self.session.add(obj1)
         self.session.add(obj2)
         self.session.add(obj3)
@@ -53,7 +59,6 @@ class DBCreateTest(unittest.TestCase):          # Class with unitttest.TestCase 
         self.assertTrue(obj[0].id ==1)
 
         self.assertTrue(obj[0].currentstatus == "NEW")
-
 
         obj = self.session.query(Analysis).filter_by(currentstatus='NEW').all()
 

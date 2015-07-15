@@ -38,8 +38,19 @@ class Analysis(Base):
     cores          = Column(Integer,     nullable=True)
     mempercore     = Column(Integer,     nullable=True)
 
-    input_files = relationship("AnalysisInputFile", order_by="AnalysisInputFile.id", backref="analysis")
-
+    date_created   = Column(DateTime,    default=datetime.utcnow)
+    
+    input_files    = relationship("AnalysisInputFile",       order_by="AnalysisInputFile.input_file_rank",           backref="analysis")
+    output_files   = relationship("AnalysisOutputFile",      order_by="AnalysisOutputFile.output_file_rank",         backref="analysis")
+    status         = relationship("AnalysisStatus",          order_by="AnalysisStatus.status_rank",                  backref="analysis")
+    commands       = relationship("AnalysisCommand",         order_by="AnalysisCommand.command_rank",                backref="analysis")
+    output_strings = relationship("AnalysisOutputString",    order_by="AnalysisOutputString.output_string_rank",     backref="analysis")
+    summary_values = relationship("AnalysisSummaryValue",    order_by="AnalysisSummaryValue.summary_value_rank",     backref="analysis")
+    slurm_values   = relationship("AnalysisSlurmValue",      order_by="AnalysisSlurmValue.slurm_value_rank",         backref="analysis")
+    
+    expected_output_files = relationship("AnalysisExpectedOutputFile", order_by="AnalysisExpectedOutputFile.expected_output_file_rank", backref="analysis")
+    
+    
 class AnalysisInputFile(Base):
 
     __tablename__ = 'analysis_input_file'
@@ -47,7 +58,7 @@ class AnalysisInputFile(Base):
     id                 = Column(Integer,      primary_key=True)
     analysis_id        = Column(Integer,      ForeignKey('analysis.id'))
     input_file         = Column(String(250),  nullable=False)
-    input_file_type    = Column(String(250),  nullable=False)
+    input_file_type    = Column(String(250),  nullable=True)
     input_file_rank    = Column(Integer,      nullable=False)
     date_created       = Column(DateTime,     default=datetime.utcnow)
     
@@ -64,7 +75,7 @@ class AnalysisOutputFile(Base):
     output_file_rank   = Column(Integer,      nullable=False)
     date_created       = Column(DateTime,     default=datetime.utcnow)
 
-    analysis = relationship("Analysis",backref=backref('output_files', order_by=id))
+    #analysis = relationship("Analysis",backref=backref('output_files', order_by=id))
 
 class AnalysisExpectedOutputFile(Base):
 
@@ -78,7 +89,7 @@ class AnalysisExpectedOutputFile(Base):
     date_created                = Column(DateTime,     default=datetime.utcnow)
 
 
-    analysis = relationship("Analysis",backref=backref('expected_output_files', order_by=id))
+    #analysis = relationship("Analysis",backref=backref('expected_output_files', order_by=id))
 
 class AnalysisStatus(Base):
 
@@ -91,7 +102,7 @@ class AnalysisStatus(Base):
     status_rank             = Column(Integer,      nullable=False)
     date_created            = Column(DateTime,     default=datetime.utcnow)
 
-    analysis = relationship("Analysis",backref=backref('status', order_by=id))
+    #analysis = relationship("Analysis",backref=backref('status', order_by=id))
 
 class AnalysisCommand(Base):
 
@@ -104,7 +115,7 @@ class AnalysisCommand(Base):
     command_rank            = Column(Integer,      nullable=False)
     date_created            = Column(DateTime,     default=datetime.utcnow)
 
-    analysis = relationship("Analysis",backref=backref('commands', order_by=id))
+    #analysis = relationship("Analysis",backref=backref('commands', order_by=id))
 
 class AnalysisOutputString(Base):
 
@@ -117,7 +128,7 @@ class AnalysisOutputString(Base):
     output_string_rank      = Column(Integer,      nullable=False)
     date_created            = Column(DateTime,     default=datetime.utcnow)
 
-    analysis = relationship("Analysis",backref=backref('output_strings', order_by=id))
+    #analysis = relationship("Analysis",backref=backref('output_strings', order_by=id))
 
 class AnalysisSummaryValue(Base):
 
@@ -130,7 +141,7 @@ class AnalysisSummaryValue(Base):
     summary_value_rank      = Column(Integer,      nullable=False)
     date_created            = Column(DateTime,     default=datetime.utcnow)
 
-    analysis = relationship("Analysis",backref=backref('summary_values', order_by=id))
+    #analysis = relationship("Analysis",backref=backref('summary_values', order_by=id))
 
 class AnalysisSlurmValue(Base):
 
@@ -143,7 +154,7 @@ class AnalysisSlurmValue(Base):
     slurm_value_rank        = Column(Integer,      nullable=False)
     date_created            = Column(DateTime,     default=datetime.utcnow)
 
-    analysis = relationship("Analysis",backref=backref('slurm_values', order_by=id))
+    #analysis = relationship("Analysis",backref=backref('slurm_values', order_by=id))
 
 dbfile = settings.DBNAME
 
