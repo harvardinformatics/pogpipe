@@ -6,33 +6,27 @@ import sys
 import unittest
 
 scriptdir = os.path.dirname(os.path.realpath(__file__))
-
 sys.path.append(scriptdir + "/../")
 
-
-from datamodel.database.DB      import Analysis,Base
 from datamodel.FileUtils        import FileUtils
-
-from sqlalchemy                 import create_engine
-from sqlalchemy.orm             import sessionmaker
-
-from config import settings
+from config                     import settings
 
 if FileUtils.fileExists(settings.TESTDBNAME):
     os.remove(settings.TESTDBNAME)
+
+settings.DBNAME = settings.TESTDBNAME
+
+
+from datamodel.database.DB      import Analysis
+from sqlalchemy.orm             import sessionmaker
 
 class DBCreateTest(unittest.TestCase):          # Class with unitttest.TestCase as arg - 
 
 
     def setUp(self):
-
-        self.engine      = create_engine('sqlite:///test.db')
-        self.engine.echo = True
-
-        Base.metadata.create_all(self.engine)
-
-        Session = sessionmaker(bind=self.engine)
-
+        
+            
+        Session = sessionmaker(bind=settings.ENGINE)
         self.session = Session()
 
 

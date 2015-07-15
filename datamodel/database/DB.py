@@ -1,18 +1,16 @@
-import os
-import sys
+#import os
+#import sys
 
 from datetime                   import datetime
 
-from sqlalchemy                 import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy                 import create_engine, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm             import relationship,backref
-from sqlalchemy                 import create_engine
-from sqlalchemy.sql             import func 
 
 from config import settings
 
 Base = declarative_base()
- 
+
 class Analysis(Base):
 
     __tablename__ = 'analysis'
@@ -146,7 +144,11 @@ class AnalysisSlurmValue(Base):
     date_created            = Column(DateTime,     default=datetime.utcnow)
 
     analysis = relationship("Analysis",backref=backref('slurm_values', order_by=id))
-#engine = create_engine('sqlite:///)
-#engine.echo = True
 
-#Base.metadata.create_all(engine)
+dbfile = settings.DBNAME
+
+print dbfile
+settings.ENGINE = create_engine('sqlite:///'+dbfile)
+settings.ENGINE.echo = True
+
+Base.metadata.create_all(settings.ENGINE)

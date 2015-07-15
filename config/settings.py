@@ -26,5 +26,7 @@ ANALYSIS_MODULES     = ['FastQC','DirectoryList','DirectorySize','Bowtie2','Blas
 #DATABASE_DIR         = ['/n/home_rc/mclamp/Dropbox/databases/']
 #DATABASE_DIR         = ['/n/regal/informatics/databases/']
 
+ENGINE                = None
+
 logging.basicConfig(filename=LOGFILE,level=logging.INFO)
 
