@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Blast output columns for outfmt 6 are
+# queryId, subjectId, percIdentity, alnLength, mismatchCount, gapOpenCount, queryStart, queryEnd, subjectStart, subjectEnd, eVal, bitScore
+
+# In addition we add qlen slen qseq sseq
+
+for i in *.pep.fa ; do
+   ii=${i%.pep.fa}
+
+   if [ -e $ii.pog ] ; then
+      echo "Blast db exists for $i"
+   else
+     echo "Making blast db for $i : $ii"
+     makeblastdb -in $i  -out $ii -input_type fasta -dbtype prot -parse_seqids -title $ii
+   fi
+done
+
+for i in *.pep.fa ; do
+   echo "Running blast for $i"
+
+   ii=${i%.pep.fa}
+
+   for j in *.pep.fa ; do
+
+     if [ $i != $j ] ; then
+       jj=${j%.pep.fa}
+
+       if [ -e $ii-$jj.blastp ] ; then
+         echo "Blast output exists for  query $i database $jj"
+       else
+         echo "Running blastp query $i database $jj"
+         blastp -db $jj -query $i -outfmt '6 std qlen slen qseq sseq' > $ii-$jj.blastp
+       fi
+     fi
+   done
+done

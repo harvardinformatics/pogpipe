@@ -1,6 +1,12 @@
 """Unit test for FastQCAnalysis.py"""
 
+import os
+import sys
 import unittest
+
+scriptdir = os.path.dirname(os.path.realpath(__file__))
+
+sys.path.append(scriptdir + "/../")
 
 from   datamodel.AnalysisRunner          import AnalysisRunner
 from   datamodel.FastQCAnalysis          import FastQCAnalysis
@@ -24,6 +30,8 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
         self.assertTrue(len(self.input_files) == 1)
         self.assertTrue(len(self.input_types) == 1)
+
+        self.ana.init()
 
         cmds = self.ana.getCommands()
 

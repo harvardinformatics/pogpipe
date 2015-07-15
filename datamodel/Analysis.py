@@ -65,10 +65,28 @@ class Analysis(object):
 
         self.temp_output_files     = []
 
+        #self.init()
+
     def init(self):
         """ Function to set up any analysis specific variables """
 
-    
+        self.checkDirectory(self.output_dir,"output")
+        self.checkDirectory(self.working_dir,"working")
+     
+    def checkDirectory(self,directory,dirtype):
+      
+        if not directory:
+            raise IOError("No [%s] directory set for analysis module [%s]"%(dirtype,self.name))
+ 
+        if not os.path.exists(directory):
+            raise IOError("[%s] directory [%s] doesn't exist for analysis module [%s]"%(dirtype,directory,name))
+ 
+        if not os.path.isdir(directory):
+            raise IOError("[%s] directory [%s] is not a directory in analysis module"%(dirtype,directory,name))
+
+        if not os.access(directory,os.W_OK):
+            raise IOError("[%s] directory [%s] not writable for analysis module [%s]"%(dirtype,directory,name))
+
     def toString(self):
 
         return AnalysisFactory.toString(self)
@@ -152,6 +170,7 @@ class Analysis(object):
         valid = True;
 
         for i in self.input_files:
+
             if os.path.isfile(i) == False:
                 valid = False
 

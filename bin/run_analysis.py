@@ -82,6 +82,19 @@ if __name__ == '__main__':
     else:
         args.input_type = list()
 
+    if args.param:
+        tmp1 = args.param.split(",");
+        tmp2 = {}
+        
+        for tmp in tmp1:
+            t = tmp.split("=")
+            
+            if len(t) == 1:
+                tmp2[t] = True
+            else:
+                tmp2[t[0]] = t[1]
+
+        args.param = tmp2
 
     main(args)
 

@@ -1,7 +1,18 @@
 """Unit test for FastQCAnalysis.py"""
 
+<<<<<<< HEAD
 import unittest
 
+=======
+import os
+import sys
+import unittest
+
+scriptdir = os.path.dirname(os.path.realpath(__file__))
+
+sys.path.append(scriptdir + "/../")
+
+>>>>>>> f24e99b9a5c4fcc115203ebd7e12b8a08a35b53d
 from   datamodel.AnalysisRunner          import AnalysisRunner
 from   datamodel.FastQCAnalysis          import FastQCAnalysis
 from   datamodel.factory.AnalysisFactory import AnalysisFactory

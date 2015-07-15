@@ -41,6 +41,7 @@ class BlastOutput6ParserAnalysis(Analysis):
             raise Exception("Input files [%s] don't exist = can't continue"%(self.input_files))
 
         return self.commands
+<<<<<<< HEAD
     
     def postProcessOutput(self):
 
@@ -101,6 +102,74 @@ class BlastOutput6ParserAnalysis(Analysis):
 
             self.data = data
 
+=======
+  
+    @staticmethod 
+    def parseBlastOutput6(file):
+ 
+      hits = {}
+
+      prev = None
+
+      with open(file) as fp:
+
+         for line in fp:
+             
+             line = line.rstrip('\n')
+
+             ff   = line.split('\t')
+
+             qid = ff[0]
+	     hid = ff[1]
+             pid = float(ff[2])
+             alnlen = ff[3]
+             mm     = int(ff[4])
+             gaps   = int(ff[5])
+             qstart = int(ff[6])
+             qend   = int(ff[7])
+             hstart = int(ff[8])
+             hend   = int(ff[9])
+             exval   = float(ff[10])
+             score  = float(ff[11])
+
+             feat = Feature()
+
+             feat.qid = qid
+             feat.qstart = qstart
+             feat.qend   = qend
+             feat.hid    = hid
+             feat.hstart = hstart
+             feat.hend   = hend
+
+             feat.pid = pid
+             feat.score = score
+                
+             feat.mm = mm
+             feat.gaps = gaps
+             feat.exval = exval
+
+             if len(ff) > 15:
+                 feat.qlen = int(ff[12])
+                 feat.hlen = int(ff[13])
+                 feat.qseq = ff[14]
+                 feat.hseq = ff[15]
+
+             if not qid in hits:
+                 hits[qid] = []
+
+             tmp = hits[qid]
+             tmp.append(feat)
+
+      return hits 
+    
+    def postProcessOutput(self):
+
+        super(BlastOutput6ParserAnalysis,self).postProcessOutput()
+
+        file   = self.input_files[0]
+
+        self.data   = self.parseBlastOutput6(file)
+>>>>>>> f24e99b9a5c4fcc115203ebd7e12b8a08a35b53d
 
         print "#QID\t$HID\tQCOV\tHCOV\tPID\tSCORE\tQSEQ\tHSEQ"
         for qid in self.data:

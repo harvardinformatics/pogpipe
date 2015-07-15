@@ -43,7 +43,6 @@ class FastQCAnalysis(Analysis):
     def setInputFiles(self,input_files,input_types):
         super(FastQCAnalysis,self).setInputFiles(input_files,input_types)
         
-
     def init(self):
 
         if len(self.input_files) == 0:
@@ -139,6 +138,8 @@ class FastQCAnalysis(Analysis):
         >>END_MODULE
         """
 
+        print self.output_dir
+        print self.fastqc_dir
         file = os.path.join(self.output_dir,self.fastqc_dir)
         print "File %s"%file
         file = os.path.join(file,"fastqc_data.txt")

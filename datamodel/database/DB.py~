@@ -1,0 +1,142 @@
+import os
+import sys
+
+from sqlalchemy                 import Column, ForeignKey, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm             import relationship
+from sqlalchemy                 import create_engine
+ 
+Base = declarative_base()
+ 
+class Analysis(Base):
+
+    __tablename__ = 'analysis'
+
+    # Here we define columns for the table person
+    # Notice that each column is also a normal Python instance attribute.
+
+    id             = Column(Integer,     primary_key=True)
+    name           = Column(String(250), nullable=False)
+    owner          = Column(String(250), nullable=True)
+    owneremail     = Column(String(250), nullable=True)
+     
+    currentstatus  = Column(String(250), nullable=False)
+    outputstatus   = Column(String(250), nullable=True)
+
+    input_dir      = Column(String(250), nullable=True)
+    working_dir    = Column(String(250), nullable=True)
+    output_dir     = Column(String(250), nullable=True)
+
+    run_type       = Column(String(250), nullable=True)
+    param          = Column(String(250), nullable=True)
+
+    queue          = Column(String(250), nullable=True)
+    slurmid        = Column(Integer,     nullable=True)
+    cores          = Column(Integer,     nullable=True)
+    mempercore     = Column(Integer,     nullable=True)
+
+#    cur = self.executeQuery("DROP TABLE IF EXISTS AnalysisInputFile")
+#                cur = self.executeQuery("DROP TABLE IF EXISTS AnalysisStatus")
+#                cur = self.executeQuery("DROP TABLE IF EXISTS AnalysisCommand")
+#                cur = self.executeQuery("DROP TABLE IF EXISTS AnalysisOutputFile")
+#                cur = self.executeQuery("DROP TABLE IF EXISTS AnalysisExpectedOutputFile")
+#                cur = self.executeQuery("DROP TABLE IF EXISTS AnalysisSlurmValue")
+#                cur = self.executeQuery("DROP TABLE IF EXISTS AnalysisSummaryValue")
+#                cur = self.executeQuery("DROP TABLE IF EXISTS AnalysisOutputString")
+
+class AnalysisInputFile(Base):
+
+    __tablename__ = 'analysis_input_file'
+
+    id                 = Column(Integer,      primary_key=True)
+    analysis_id        = Column(Integer,      ForeignKey('analysis.id'))
+    input_file         = Column(String(250),  nullable=False)
+    input_file_type    = Column(String(250),  nullable=False)
+    input_file_rank    = Column(Integer,      nullable=False)
+    date_created       = Column(DateTime,     default=datetime.datetime.utcnow)
+
+class AnalysisOutputFile(Base):
+
+    __tablename__ = 'analysis_output_file'
+
+    id                 = Column(Integer,      primary_key=True)
+    analysis_id        = Column(Integer,      ForeignKey('analysis.id'))
+    output_file        = Column(String(250),  nullable=False)
+    output_file_type   = Column(String(250),  nullable=False)
+    output_file_rank   = Column(Integer,      nullable=False)
+    date_created       = Column(DateTime,     default=datetime.datetime.utcnow)
+
+class AnalysisExpectedOutputFile(Base):
+
+    __tablename__ = 'analysis_expected_output_file'
+
+    id                          = Column(Integer,      primary_key=True)
+    analysis_id                 = Column(Integer,      ForeignKey('analysis.id'))
+    expected_output_file        = Column(String(250),  nullable=False)
+    expected_output_file_type   = Column(String(250),  nullable=False)
+    expected_output_file_rank   = Column(Integer,      nullable=False)
+    date_created                = Column(DateTime,     default=datetime.datetime.utcnow)
+
+class AnalysisStatus(Base):
+
+    __tablename__ = 'analysis_status'
+
+    id                      = Column(Integer,      primary_key=True)
+    analysis_id             = Column(Integer,      ForeignKey('analysis.id'))
+    status                  = Column(String(250),  nullable=False)
+    status_type             = Column(String(250),  nullable=False)
+    status_rank             = Column(Integer,      nullable=False)
+    date_created            = Column(DateTime,     default=datetime.datetime.utcnow)
+
+class AnalysisCommand(Base):
+
+    __tablename__ = 'analysis_command'
+
+    id                      = Column(Integer,      primary_key=True)
+    analysis_id             = Column(Integer,      ForeignKey('analysis.id'))
+    command                 = Column(String(250),  nullable=False)
+    command_type            = Column(String(250),  nullable=False)
+    command_rank            = Column(Integer,      nullable=False)
+    date_created            = Column(DateTime,     default=datetime.datetime.utcnow)
+
+class AnalysisOutputString(Base):
+
+    __tablename__ = 'analysis_expected_output_string'
+
+    id                      = Column(Integer,      primary_key=True)
+    analysis_id             = Column(Integer,      ForeignKey('analysis.id'))
+    output_string           = Column(String(250),  nullable=False)
+    output_string_type      = Column(String(250),  nullable=False)
+    output_string_rank      = Column(Integer,      nullable=False)
+    date_created            = Column(DateTime,     default=datetime.datetime.utcnow)
+
+class AnalysisSummaryValue(Base):
+
+    __tablename__ = 'analysis_summary_value'
+
+    id                      = Column(Integer,      primary_key=True)
+    analysis_id             = Column(Integer,      ForeignKey('analysis.id'))
+    summary_value_string    = Column(String(250),  nullable=False)
+    summary_value_type      = Column(String(250),  nullable=False)
+    summary_value_rank      = Column(Integer,      nullable=False)
+    date_created            = Column(DateTime,     default=datetime.datetime.utcnow)
+
+class AnalysisSlurmValue(Base):
+
+    __tablename__ = 'analysis_slurm_value'
+
+    id                      = Column(Integer,      primary_key=True)
+    analysis_id             = Column(Integer,      ForeignKey('analysis.id'))
+    slurm_value_string      = Column(String(250),  nullable=False)
+    slurm_value_type        = Column(String(250),  nullable=False)
+    slurm_value_rank        = Column(Integer,      nullable=False)
+    date_created            = Column(DateTime,     default=datetime.datetime.utcnow)
+
+
+# Create an engine that stores data in the local directory's
+# sqlalchemy_example.db file.
+engine = create_engine('sqlite:///sqlalchemy_example.db')
+ 
+# Create all tables in the engine. This is equivalent to "Create Table"
+# statements in raw SQL.
+Base.metadata.create_all(engine)

@@ -72,6 +72,7 @@ class AnalysisRunnerWrapper(object):
 
 
     def createAnalysisRunnerClass(self):
+        print self.args
 
         self.dbfactory = AnalysisDBFactory(settings.DBNAME)
 
@@ -123,7 +124,14 @@ class AnalysisRunnerWrapper(object):
             
             # Need to add error message to the analysis
 
+<<<<<<< HEAD
      #       str = "AnalysisRunnerWrapper %20s %s Failed %s Inputs were [%s] Params [%s] Error was [%s]" % (self.ana.name,self.ana.id,self.ana.current_status,self.ana.input_files,self.ana.param,e.args[0])
      #       logging.error(" ========> %s"%str);
      #       print "ERROR: %s"%str
      #       print "ERROR: %s"%e
+=======
+            str = "AnalysisRunnerWrapper %20s %s Failed %s Inputs were [%s] Params [%s] Error was [%s]" % (self.ana.name,self.ana.id,self.ana.current_status,self.ana.input_files,self.ana.param,e.args[0])
+            logging.error(" ========> %s"%str);
+            logging.error(" ========> %s"%e);
+            print "ERROR: %s"%e
+>>>>>>> f24e99b9a5c4fcc115203ebd7e12b8a08a35b53d

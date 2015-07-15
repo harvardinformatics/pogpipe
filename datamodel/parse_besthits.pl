@@ -25,7 +25,11 @@ while (my $line = <$fh1>) {
 
     chomp($line);
 
+<<<<<<< HEAD
     if ($line =~ /^gi/) {
+=======
+    #if ($line =~ /^gi/) {
+>>>>>>> f24e99b9a5c4fcc115203ebd7e12b8a08a35b53d
 	my @f = split(/\t/,$line);
 
 	my $qid = $f[0];
@@ -39,7 +43,11 @@ while (my $line = <$fh1>) {
 	$prev = $qid;
 	
 
+<<<<<<< HEAD
     }
+=======
+    #}
+>>>>>>> f24e99b9a5c4fcc115203ebd7e12b8a08a35b53d
 }
 
 $prev = undef;
@@ -48,7 +56,11 @@ while (my $line = <$fh2>) {
 
     chomp($line);
 
+<<<<<<< HEAD
     if ($line =~ /^gi/) {
+=======
+    #if ($line =~ /^gi/) {
+>>>>>>> f24e99b9a5c4fcc115203ebd7e12b8a08a35b53d
 	my @f = split(/\t/,$line);
 
 	my $qid = $f[0];
@@ -60,7 +72,11 @@ while (my $line = <$fh2>) {
 
 	}
 	$prev = $qid;
+<<<<<<< HEAD
     }
+=======
+    #}
+>>>>>>> f24e99b9a5c4fcc115203ebd7e12b8a08a35b53d
 }
 
 

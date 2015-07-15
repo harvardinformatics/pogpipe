@@ -45,7 +45,11 @@ while ($i < scalar(@files)) {
 	    
 	    print "Blast file $bfile1 $bfile2\n";
 	    
+<<<<<<< HEAD
 	    my $cmd = "perl ./datamodel/parse_besthits.pl $bfile1 $bfile2 > $stub1-$stub2.brh.dat";
+=======
+	    my $cmd = "perl ../datamodel/parse_besthits.pl $bfile1 $bfile2 > $stub1-$stub2.brh.dat";
+>>>>>>> f24e99b9a5c4fcc115203ebd7e12b8a08a35b53d
 	    
 	    print $cmd;
 	    

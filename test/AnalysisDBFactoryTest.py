@@ -1,12 +1,18 @@
 """Unit test for AnalysisDB.py"""
 
+import os
+import sys
+import unittest
+
+scriptdir = os.path.dirname(os.path.realpath(__file__))
+
+sys.path.append(scriptdir + "/../")
+
 from datamodel.factory.AnalysisDBFactory import AnalysisDBFactory
 from datamodel.factory.AnalysisFactory   import AnalysisFactory
 from datamodel.Analysis                  import Analysis
 
 import pprint
-import unittest
-import sys
 
 from config import settings
 

@@ -1,6 +1,12 @@
 """Unit test for DirectoryListAnalysis.py"""
 
 import unittest
+import os
+import sys
+
+scriptdir = os.path.dirname(os.path.realpath(__file__))
+
+sys.path.append(scriptdir + "/../")
 
 from   datamodel.DirectoryListAnalysis import DirectoryListAnalysis
 from   datamodel.AnalysisRunner        import AnalysisRunner

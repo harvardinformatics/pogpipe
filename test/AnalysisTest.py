@@ -1,8 +1,15 @@
 """Unit test for Analysis.py"""
 
+import os
+import sys
+import unittest
+
+scriptdir = os.path.dirname(os.path.realpath(__file__))
+
+sys.path.append(scriptdir + "/../")
+
 from datamodel.Analysis  import Analysis
 from datamodel.FileUtils import FileUtils
-import unittest
 
 class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.TestCase as arg - 
 
