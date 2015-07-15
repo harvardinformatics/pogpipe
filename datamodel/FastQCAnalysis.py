@@ -1,6 +1,5 @@
-from   datamodel.Analysis       import Analysis
+from   datamodel.database.DB    import Analysis, AnalysisCommand
 from   datamodel.FileUtils      import FileUtils
-from   subprocess               import Popen, PIPE
 from   config                   import settings
 
 import os
@@ -21,7 +20,7 @@ class FastQCAnalysis(Analysis):
 
     def __init__(self):
 
-        super(FastQCAnalysis,self).__init__(self.name)
+        super(FastQCAnalysis,self).__init__()
 
         self.expected_output_filelist = ['fastqc_data.txt',
                                  'summary.txt',
@@ -43,12 +42,15 @@ class FastQCAnalysis(Analysis):
     def setInputFiles(self,input_files,input_types):
         super(FastQCAnalysis,self).setInputFiles(input_files,input_types)
         
+        self.init()
+        
     def init(self):
-
+        super(FastQCAnalysis,self).init()
+        
         if len(self.input_files) == 0:
             raise Exception("No input files for FastQCAnalysis module. Can't init")
 
-        fileparts = FileUtils.getFileParts(self.input_files[0])
+        fileparts = FileUtils.getFileParts(self.input_files[0].input_file)
 
         if fileparts['fileext'] == ".fastq":
             dir = fileparts['filestub'] + "_fastqc/"
@@ -63,9 +65,10 @@ class FastQCAnalysis(Analysis):
         tmp = []
 
         for i,f in enumerate(self.expected_output_filelist):
-            tmp.append(dir + f)
-
-        self.expected_output_files = tmp
+            #tmp.append(dir + f)
+            self.addExpectedOutputFile(dir + f)
+            
+        #self.expected_output_files = tmp
 
         
     def getCommands(self):
@@ -75,9 +78,9 @@ class FastQCAnalysis(Analysis):
         if self.checkInputFiles() == False:
             raise Exception("Input files [%s] don't exist = can't continue"%(self.input_files))
 
-        command = "java -Xmx1024M -Djava.awt.headless=true -Djava.awt.headlesslib=true -classpath " + self.classpath + " " + " -Dfastqc.output_dir=" + self.getWorkingDirectory() + " uk.ac.babraham.FastQC.FastQCApplication " + self.input_files[0]
+        command = "java -Xmx1024M -Djava.awt.headless=true -Djava.awt.headlesslib=true -classpath " + self.classpath + " " + " -Dfastqc.output_dir=" + self.working_dir + " uk.ac.babraham.FastQC.FastQCApplication " + self.input_files[0].input_file
 
-        self.commands.append(command)
+        self.commands.append(AnalysisCommand(command=command,command_rank=len(self.commands)+1))
 
         return self.commands
     

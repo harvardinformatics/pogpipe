@@ -96,9 +96,12 @@ class Analysis(Base):
         logging.info(" ========> Analysis %20s called checkInputFiles:  Input Files Valid %s"%(self.name,valid))
 
         return valid
+    
     def checkDiskSpace(self):
+        
         print self.currentstatus
         print self.working_dir
+        
         bytes = FileUtils.getFreeDiskSpace(self.working_dir) 
         logging.info(" ========> Analysis %20s checked disk space for %s Free space (bytes) %s Needed %s"%(self.name,self.working_dir,bytes,self.minimum_space_needed))
 
@@ -135,6 +138,9 @@ class Analysis(Base):
     
     def addOutputFile(self,tmpstr):
         self.output_files.append(AnalysisOutputFile(output_file=tmpstr,output_file_rank=len(self.output_files)+1))
+  
+    def addExpectedOutputFile(self,tmpstr):
+        self.expected_output_files.append(AnalysisExpectedOutputFile(expected_output_file=tmpstr,expected_output_file_rank=len(self.expected_output_files)+1))
         
     def getOutputStrings(self):
         return map(lambda x:x.output_string,self.output_strings)
