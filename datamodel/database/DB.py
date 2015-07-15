@@ -1,5 +1,6 @@
-#import os
-#import sys
+import os
+import sys
+import logging
 
 from datetime                   import datetime
 
@@ -50,7 +51,52 @@ class Analysis(Base):
     
     expected_output_files = relationship("AnalysisExpectedOutputFile", order_by="AnalysisExpectedOutputFile.expected_output_file_rank", backref="analysis")
     
-    
+    def init(self):
+        """ Function to set up any analysis specific variables """
+        try:
+            self.checkDirectory(self.output_dir,"output")
+            self.checkDirectory(self.working_dir,"working")
+        except Exception as e:
+            logging.info("EXCEPTION checking directory in analysis module [%s]. Error is [%s]"%(self.name,e.message))
+            raise
+        
+        logging.info("SUCCESS Checking output/workding directories in analysis module [%s]. Dirs are[%s][%s]"%(self.name,self.output_dir,self.working_dir))
+        
+    def checkDirectory(self,directory,dirtype):
+      
+        if not directory:
+            raise IOError("No [%s] directory set for analysis module [%s]"%(dirtype,self.name))
+ 
+        if not os.path.exists(directory):
+            raise IOError("[%s] directory [%s] doesn't exist for analysis module [%s]"%(dirtype,directory,self.name))
+ 
+        if not os.path.isdir(directory):
+            raise IOError("[%s] directory [%s] is not a directory in analysis module"%(dirtype,directory,self.name))
+
+        if not os.access(directory,os.W_OK):
+            raise IOError("[%s] directory [%s] not writable for analysis module [%s]"%(dirtype,directory,self.name))
+
+    def getCommands(self):
+
+        """Constructs and returns the command line to run"""
+
+
+    def setInputFiles(self,input_files,input_types):
+        self.input_files = []
+                
+        
+        for i,val in enumerate(input_files):
+            tmptype = None
+            if i in input_types:
+                tmptype = input_types[i]
+                
+            tmpf = AnalysisInputFile(input_file=val,input_file_rank=i+1,input_file_type=tmptype)
+            self.input_files.append(tmpf)
+        
+        
+        logging.info("SUCCESS Setting input files and types in analysis module [%s]. Files are [%s]"%(self.name,", ".join(map(lambda x:x.input_file,self.input_files))))
+        return True
+
 class AnalysisInputFile(Base):
 
     __tablename__ = 'analysis_input_file'
@@ -156,10 +202,11 @@ class AnalysisSlurmValue(Base):
 
     #analysis = relationship("Analysis",backref=backref('slurm_values', order_by=id))
 
-dbfile = settings.DBNAME
+def init_database():
 
-print dbfile
-settings.ENGINE = create_engine('sqlite:///'+dbfile)
-settings.ENGINE.echo = True
+    dbfile = settings.DBNAME
 
-Base.metadata.create_all(settings.ENGINE)
+    settings.ENGINE = create_engine('sqlite:///'+dbfile)
+    #settings.ENGINE.echo = True
+
+    Base.metadata.create_all(settings.ENGINE)

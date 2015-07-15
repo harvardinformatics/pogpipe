@@ -5,32 +5,37 @@ import os
 import sys
 import unittest
 
-scriptdir = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(scriptdir + "/../")
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../")
 
 from datamodel.FileUtils        import FileUtils
 from config                     import settings
 
-if FileUtils.fileExists(settings.TESTDBNAME):
-    os.remove(settings.TESTDBNAME)
-
-settings.DBNAME = settings.TESTDBNAME
-
-
-from datamodel.database.DB      import Analysis, AnalysisInputFile
+from datamodel.database.DB      import init_database
+from datamodel.database.DB      import Analysis, AnalysisInputFile, AnalysisOutputFile, AnalysisExpectedOutputFile 
+from datamodel.database.DB      import AnalysisStatus,AnalysisCommand,AnalysisOutputString,AnalysisSummaryValue,AnalysisSlurmValue
 from sqlalchemy.orm             import sessionmaker
+
+
 
 class DBCreateTest(unittest.TestCase):          # Class with unitttest.TestCase as arg - 
 
 
     def setUp(self):
         
-            
+        if FileUtils.fileExists(settings.TESTDBNAME):  os.remove(settings.TESTDBNAME)
+
+        settings.DBNAME = settings.TESTDBNAME
+
+        init_database()
+                    
         Session = sessionmaker(bind=settings.ENGINE)
         self.session = Session()
 
 
     def testCreateAnalysis(self):
+        
+        input_files = ['pog1.fa','pog2.fa','pog3.fa']
+        input_types = ['fasta','fasta','fasta']
         
         obj1 = Analysis(name="pog1")
         obj2 = Analysis(name="pog2",currentstatus="COMPLETE")
@@ -42,6 +47,7 @@ class DBCreateTest(unittest.TestCase):          # Class with unitttest.TestCase 
         obj1.input_files.append(if1)
         obj1.input_files.append(if2)
         
+        obj2.setInputFiles(input_files,input_types)
         
         self.session.add(obj1)
         self.session.add(obj2)

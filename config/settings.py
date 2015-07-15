@@ -19,6 +19,7 @@ OUTPUT_DIR           = '/Users/mclamp/git/harvardinformatics/pogpipe/testout/'
 LOGFILE              = '/tmp/pogpipe_' + datetime.now().strftime("%Y-%m-%d")+'.log'
 TMPDIR               = '/tmp/'
 TESTDBNAME           = 'test.db'
+TESTLOGFILE          = 'test.log'
 
 ANALYSIS_MODULES     = ['FastQC','DirectoryList','DirectorySize','Bowtie2','BlastOutput6Parser','BlastDB']
 
