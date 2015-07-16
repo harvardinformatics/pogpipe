@@ -1,9 +1,5 @@
 """Unit test for FastQCAnalysis.py"""
 
-<<<<<<< HEAD
-import unittest
-
-=======
 import os
 import sys
 import unittest

@@ -89,12 +89,12 @@ class Slurm(object):
         if self.analysis.id is None:
             str += "python " + settings.POGPIPEROOT + "bin/run_analysis.py -a " + name + " -i "
  
-            str += self.analysis.input_files[0]
+            str += self.analysis.input_files[0].input_file
     
         else:
             str += "python " + settings.POGPIPEROOT + "bin/run_analysis.py -a " + name + " -i "
  
-            str += self.analysis.input_files[0]
+            str += self.analysis.input_files[0].input_file
 
         self.batchfiletext = str
 

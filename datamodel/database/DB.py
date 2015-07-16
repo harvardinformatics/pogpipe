@@ -37,10 +37,10 @@ class Analysis(Base):
     run_type       = Column(String(250), nullable=True)
     param          = Column(String(250), nullable=True)
 
-    queue          = Column(String(250), nullable=True)
-    slurmid        = Column(Integer,     nullable=True)
-    cores          = Column(Integer,     nullable=True)
-    mempercore     = Column(Integer,     nullable=True)
+    queue          = Column(String(250), nullable=True, default='general')
+    slurmid        = Column(Integer,     nullable=True, default=-1)
+    cores          = Column(Integer,     nullable=True, default=1)
+    mempercore     = Column(Integer,     nullable=True,default = 1024)
 
     date_created   = Column(DateTime,    default=datetime.utcnow)
     
