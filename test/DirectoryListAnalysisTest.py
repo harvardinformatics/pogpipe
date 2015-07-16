@@ -10,7 +10,7 @@ sys.path.append(scriptdir + "/../")
 
 from   datamodel.DirectoryListAnalysis import DirectoryListAnalysis
 from   datamodel.AnalysisRunner        import AnalysisRunner
-
+from   datamodel.database.AnalysisUtils import AnalysisUtils
 class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.TestCase as arg - 
 
     
@@ -23,11 +23,11 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
     def testSetInputFiles(self):
 
-        self.assertTrue(self.anaobj.setInputFiles(self.inputs,['dir']))
+        self.assertTrue(AnalysisUtils.setInputFiles(self.anaobj,self.inputs,['dir']))
 
     def testGetInput(self):
 
-        self.anaobj.setInputFiles(self.inputs,['dir'])
+        AnalysisUtils.setInputFiles(self.anaobj,self.inputs,['dir'])
 
         tmpinputs = self.anaobj.input_files
 
@@ -35,27 +35,27 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
     def testRun(self):
 
-        self.anaobj.setInputFiles(self.inputs,['dir'])
+        AnalysisUtils.setInputFiles(self.anaobj,self.inputs,['dir'])
 
         self.runner  = AnalysisRunner(self.anaobj)    
 
         self.runner.run()
 
         
-        tmpstr = self.anaobj.getOutputStrings()
+        tmpstr = AnalysisUtils.getOutputStrings(self.anaobj)
         
         print tmpstr
-        self.assertTrue(len(self.anaobj.getOutputStrings()) > 0)
+        self.assertTrue(len(AnalysisUtils.getOutputStrings(self.anaobj)) > 0)
 
 
     def testGetOutput(self):
-        self.anaobj.setInputFiles(self.inputs,['dir'])
+        AnalysisUtils.setInputFiles(self.anaobj,self.inputs,['dir'])
 
         self.runner  = AnalysisRunner(self.anaobj)    
 
         self.runner.run()
 
-        out = self.runner.analysis.getOutputStrings()
+        out = AnalysisUtils.getOutputStrings(self.runner.analysis)
 
         self.assertTrue(len(out)>0)
 

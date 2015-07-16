@@ -1,4 +1,5 @@
-from   datamodel.Analysis                 import Analysis
+from   datamodel.database.DB              import Analysis,AnalysisCommand
+from   datamodel.database.AnalysisUtils   import AnalysisUtils
 from   datamodel.analysis.MummerDeltaFile import MummerDeltaFile
 from   datamodel.factory.FastaFile        import FastaFile
 from   datamodel.FileUtils                import FileUtils
@@ -18,35 +19,35 @@ class Mummer(Analysis):
     bindir        = settings.TOOLDIR  + "MUMmer3.23"
     nucmerfile    = bindir  +"/nucmer" 
 
-    params        = {'maxgap': 500,
+    paramhash        = {'maxgap': 500,
                      'mincluster': 100,
                      }
 
     def __init__(self):
 
-        super(Mummer,self).__init__(self.name)
+        super(Mummer,self).__init__()
 
-        self.params['prefix'] = self.output_dir + "/mummer"
+        self.paramhash['prefix'] = self.output_dir + "/mummer"
 
     def getCommands(self):
         
         if len(self.input_files) != 2:
             raise Exception("Mummer module needs 2 input files. Can't init")
 
-        self.checkDiskSpace()
+        AnalysisUtils.checkDiskSpace(self)
 
-        if self.checkInputFiles() == False:
+        if AnalysisUtils.checkInputFiles(self) == False:
             raise Exception("Input files [%s] don't exist = can't continue"%(self.input_files))
 
         command = self.nucmerfile
 
-        for key,value in self.params.items():
+        for key,value in self.paramhash.items():
             command = command + " --"+str(key) + "=" + str(value)
 
 
-        command = command + " " + self.input_files[0] + " " + self.input_files[1]
+        command = command + " " + self.input_files[0].input_file + " " + self.input_files[1].input_file
 
-        self.commands.append(command)
+        self.commands.append(AnalysisCommand(command=command,command_rank=len(self.commands)+1))
 
         return self.commands
     

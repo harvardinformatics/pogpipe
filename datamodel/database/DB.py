@@ -54,9 +54,9 @@ class Analysis(Base):
     
     expected_output_files = relationship("AnalysisExpectedOutputFile", order_by="AnalysisExpectedOutputFile.expected_output_file_rank", backref="analysis")
     
-    #def __init__(self,**kwargs):
-    #    self._ensure_defaults()
-    #    super(Base, self).__init__(**kwargs)
+    def __init__(self):
+        self._ensure_defaults()
+        super(Base, self).__init__()
         
     def init(self):
         """ Function to set up any analysis specific variables """

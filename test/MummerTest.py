@@ -12,7 +12,7 @@ from datamodel.analysis.Mummer import Mummer
 from datamodel.AnalysisRunner  import AnalysisRunner
 from datamodel.Feature         import Feature
 from datamodel.FileUtils       import FileUtils
-
+from datamodel.database.AnalysisUtils import AnalysisUtils
 
 class MummerTest(unittest.TestCase):          # Class with unitttest.TestCase as arg - 
 
@@ -27,9 +27,10 @@ class MummerTest(unittest.TestCase):          # Class with unitttest.TestCase as
         mummer = Mummer()
 
         self.assertTrue(mummer)
-        self.assertTrue(mummer.setInputFiles(self.input_files,['fasta','fasta']))
+        self.assertTrue(AnalysisUtils.setInputFiles(mummer,self.input_files,['fasta','fasta']))
 
-        tmpfiles = mummer.getInputFiles()
+        mummer.init()
+        tmpfiles = AnalysisUtils.getInputFiles(mummer)
 
         self.assertTrue(len(tmpfiles) ==2)
 
@@ -39,7 +40,7 @@ class MummerTest(unittest.TestCase):          # Class with unitttest.TestCase as
 
         self.assertTrue(len(commands) == 1)
 
-        self.assertTrue(commands[0].index('tools/macosx/MUMmer3.23/nucmer --maxgap=500 --mincluster=100') > 0)
+        self.assertTrue(commands[0].command.index('tools/macosx/MUMmer3.23/nucmer --maxgap=500 --mincluster=100') > 0)
 
     def testRunMummer(self):
 
@@ -47,16 +48,16 @@ class MummerTest(unittest.TestCase):          # Class with unitttest.TestCase as
         mummer = Mummer()
 
         self.assertTrue(mummer)
-        self.assertTrue(mummer.setInputFiles(self.input_files,['fasta','fasta']))
+        self.assertTrue(AnalysisUtils.setInputFiles(mummer,self.input_files,['fasta','fasta']))
 
         runner = AnalysisRunner(mummer)
         
 
         self.assertTrue(runner.run())
 
-        self.assertTrue(len(mummer.output_str) == 1)
+        self.assertTrue(len(mummer.output_strings) == 1)
 
-        self.assertTrue(mummer.output_str[0].index('4: FINISHING DATA') > 0)
+        self.assertTrue(mummer.output_strings[0].output_string.index('4: FINISHING DATA') > 0)
 
 
         self.assertTrue(FileUtils.fileExists('../testout/mummer.delta'))

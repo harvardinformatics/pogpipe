@@ -1,6 +1,6 @@
 import sys
 
-from   datamodel.database.DB   import Analysis
+from   datamodel.database.DB   import Analysis, AnalysisCommand
 
 class DirectoryListAnalysis(Analysis):
     """Toy class that lists the contents of a directory"""
@@ -12,7 +12,8 @@ class DirectoryListAnalysis(Analysis):
 
     def getCommands(self):
         
-        return map(lambda x: "ls " + x.input_file, self.input_files)
+        return map(lambda x: AnalysisCommand(command="ls " + x.input_file), self.input_files)
+
 
 
 
