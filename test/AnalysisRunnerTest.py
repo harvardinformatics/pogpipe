@@ -10,7 +10,7 @@ sys.path.append(scriptdir + "/../")
 from datamodel.AnalysisRunner          import AnalysisRunner
 from datamodel.database.DB             import Analysis
 from datamodel.factory.AnalysisFactory import AnalysisFactory
-
+from datamodel.database.AnalysisUtils  import AnalysisUtils
 
 class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.TestCase as arg - 
 
@@ -21,15 +21,17 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
         self.ana     = self.factory.createAnalysisFromModuleName("Bowtie2")
         self.ana.param   = " -x ../testdata/databases/Arabidopsis_TAIR.9.171 "
 
-        self.ana.setInputFiles(["../testdata/FoxP2_SL167.fastq"],['fastq'])
+        AnalysisUtils.setInputFiles(self.ana,["../testdata/FoxP2_SL167.fastq"],['fastq'])
 
+        self.ana.init()
+        
     def testCreateNewAnalysisRunner(self):           # Function gets called automatically
 
         """New instance should create successfully"""
 
         anarun = AnalysisRunner(self.ana)
 
-        tmpinputs = anarun.analysis.getInputFiles()
+        tmpinputs = AnalysisUtils.getInputFiles(anarun.analysis)
 
         self.assertTrue(anarun)
 

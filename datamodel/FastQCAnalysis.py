@@ -1,6 +1,7 @@
-from   datamodel.database.DB    import Analysis, AnalysisCommand
-from   datamodel.FileUtils      import FileUtils
-from   config                   import settings
+from   datamodel.database.DB            import Analysis, AnalysisCommand
+from   datamodel.database.AnalysisUtils import AnalysisUtils
+from   datamodel.FileUtils              import FileUtils
+from   config                           import settings
 
 import os
 import re
@@ -11,12 +12,11 @@ class FastQCAnalysis(Analysis):
     """Class that has all the info to run FastQC on fastq files"""
 
     minimum_space_needed = 1000000
-
-    name       = "FastQC"
-    bindir     = settings.TOOLDIR  + "FastQC"
-    classpath  = bindir + ":" + bindir + "/sam-1.32.jar:"+bindir+"/jbzip2-0.9.jar"
-    binfile    = "java -Xmx1024M -Djava.awt.headless=true -Djava.awt.headlesslib=true -classpath "+classpath + " " + " uk.ac.babraham.FastQC.FastQCApplication"
-    fastqc_dir = None
+    name                 = "FastQC"
+    bindir               = settings.TOOLDIR  + "FastQC"
+    classpath            = bindir + ":" + bindir + "/sam-1.32.jar:"+bindir+"/jbzip2-0.9.jar"
+    binfile              = "java -Xmx1024M -Djava.awt.headless=true -Djava.awt.headlesslib=true -classpath "+classpath + " " + " uk.ac.babraham.FastQC.FastQCApplication"
+    fastqc_dir           = None
 
     def __init__(self):
 
@@ -40,7 +40,7 @@ class FastQCAnalysis(Analysis):
     """ This is only working with one file - need to work out how to specify number of inputs (input_num?)"""
 
     def setInputFiles(self,input_files,input_types):
-        super(FastQCAnalysis,self).setInputFiles(input_files,input_types)
+        AnalysisUtils.setInputFiles(self,input_files,input_types)
         
         self.init()
         
@@ -66,16 +66,16 @@ class FastQCAnalysis(Analysis):
 
         for i,f in enumerate(self.expected_output_filelist):
             #tmp.append(dir + f)
-            self.addExpectedOutputFile(dir + f)
+            AnalysisUtils.addExpectedOutputFile(self,dir + f)
             
         #self.expected_output_files = tmp
 
         
     def getCommands(self):
 
-        self.checkDiskSpace()
+        AnalysisUtils.checkDiskSpace(self)
 
-        if self.checkInputFiles() == False:
+        if AnalysisUtils.checkInputFiles(self) == False:
             raise Exception("Input files [%s] don't exist = can't continue"%(self.input_files))
 
         command = "java -Xmx1024M -Djava.awt.headless=true -Djava.awt.headlesslib=true -classpath " + self.classpath + " " + " -Dfastqc.output_dir=" + self.working_dir + " uk.ac.babraham.FastQC.FastQCApplication " + self.input_files[0].input_file
@@ -86,7 +86,7 @@ class FastQCAnalysis(Analysis):
     
     def postProcessOutput(self):
 
-        super(FastQCAnalysis,self).postProcessOutput()
+        AnalysisUtils.postProcessOutput(self)
 
         output_dat = self.readOutputFastqcData()
 
