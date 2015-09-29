@@ -60,7 +60,6 @@ class Analysis(Base):
         
     def init(self):
         """ Function to set up any analysis specific variables """
-        self._ensure_defaults()
         try:
             self.checkDirectory(self.output_dir,"output")
             self.checkDirectory(self.working_dir,"working")
@@ -90,7 +89,6 @@ class Analysis(Base):
 
     def _ensure_defaults(self):
         for column in self.__table__.c:
-            print column
             if getattr(self, column.name) is None and column.default is not None and column.default.is_scalar:
                 setattr(self, column.name, column.default.arg)
                 
