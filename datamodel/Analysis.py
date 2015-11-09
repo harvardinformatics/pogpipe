@@ -5,6 +5,7 @@ import os.path
 import logging
 
 from   datamodel.FileUtils               import FileUtils
+from   datamodel.database.DB             import AnalysisCommand
 from   config                            import settings
 from   datamodel.factory.AnalysisFactory import AnalysisFactory
 
