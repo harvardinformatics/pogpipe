@@ -22,7 +22,7 @@ TMPDIR               = '/tmp/'
 TESTDBNAME           = 'test.db'
 TESTLOGFILE          = 'test.log'
 
-ANALYSIS_MODULES     = ['FastQC','DirectoryList','DirectorySize','Bowtie2','BlastOutput6Parser','BlastDB']
+ANALYSIS_MODULES     = ['FastQC','DirectoryList','DirectorySize','Bowtie2','BlastOutput6Parser','BlastDB','SamtoolsMpileup']
 
 #DATABASE_DIR         = ['/cygdrive/c/Users/mclamp/Dropbox/databases/']
 #DATABASE_DIR         = ['/n/home_rc/mclamp/Dropbox/databases/']

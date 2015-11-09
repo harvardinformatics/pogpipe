@@ -35,6 +35,7 @@ class AnalysisRunner(object):
         logging.info(" ========> AnalysisRunner for %20s called run for %s commands"%(self.analysis.name,len(self.analysis.commands)))
 
         for cmdobj in cmds:
+
             cmd = cmdobj.command
             logging.info(" ========> AnalysisRunner for %20s running comand %s"%(self.analysis.name,cmd))
 

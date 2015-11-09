@@ -11,6 +11,9 @@ class FastaFile(object):
     fh   = None
     id   = None
     seq  = None
+    len  = 0
+    num  = 0
+
     seqs = []
 
     def __init__(self,file):
@@ -401,17 +404,17 @@ class FastaFile(object):
        return outstr
 
     @staticmethod
-    def getSequenceDict(file):
+    def getSequenceDict(file,withseq=True):
 
         ff = FastaFile(file)
 
         seqs = {}
 
-        seq = ff.nextSeq()
+        seq = ff.nextSeq(withseq)
 
         while seq is not None:
             seqs[seq['id']] = seq
-            seq = ff.nextSeq()
+            seq = ff.nextSeq(withseq)
 
         return seqs
 
@@ -441,8 +444,8 @@ class FastaFile(object):
 
        return string
            
-    def nextSeq(self):
-
+    def nextSeq(self,withseq=True):
+     
       for line in self.fh:
 
         if line is None:
@@ -452,37 +455,63 @@ class FastaFile(object):
         ff   = line.split(' ')
 
         if ff[0].startswith(">"):
+
           id = ff[0].replace(">",'')
               
-          seq = {}
+          seq   = {}
           found = 0
-          if self.seq is not None:
+
+          if self.id is not None:
 
             seq['id']  = self.id
-            seq['seq'] = self.seq
+
+            if withseq:
+                seq['seq'] = self.seq
+                seq['len'] = len(self.seq)
+            else:
+                seq['len'] = self.len
+
             found = 1
 
           self.id  = id
           self.seq = None
+          self.len = 0
 
           if found == 1:
+            self.num = self.num + 1
+            seq['num'] = self.num
             self.seqs.append(seq)
             return seq
         else:
-          if self.seq is None:
-            self.seq = line
+          if withseq:
+              if self.seq is None:
+                  self.seq = line
+              else:
+                  self.seq = self.seq + line
           else:
-            self.seq = self.seq + line
+              self.len = self.len + len(line)
 
       if self.id is not None:
         seq = {}
 
         seq['id']  = self.id
-        seq['seq'] = self.seq
 
-        self.id = None
+
+        if withseq:
+            seq['seq'] = self.seq
+            seq['len'] = len(self.seq)
+        else:
+            seq['len'] = self.len
+
+        self.id  = None
         self.seq = None
+        self.len = 0
+
+        self.num = self.num + 1
+        seq['num'] = self.num
+
         self.seqs.append(seq)
+
         return seq
 
  

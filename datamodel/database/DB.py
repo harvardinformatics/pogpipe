@@ -1,6 +1,5 @@
 import os
 import sys
-import shutil
 import logging
 
 from datetime                   import datetime
@@ -8,8 +7,6 @@ from datetime                   import datetime
 from sqlalchemy                                    import create_engine, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative                    import declarative_base
 from sqlalchemy.orm                                import relationship,backref
-
-from datamodel.FileUtils                           import FileUtils
 
 from config import settings
 
@@ -54,15 +51,13 @@ class Analysis(Base):
     
     expected_output_files = relationship("AnalysisExpectedOutputFile", order_by="AnalysisExpectedOutputFile.expected_output_file_rank", backref="analysis")
     
-    
-    def __init__(self, **kwargs):
+    def __init__(self,**kwargs):
         super(Analysis, self).__init__(**kwargs)
         self._ensure_defaults()
-        
+
         
     def init(self):
         """ Function to set up any analysis specific variables """
-        self._ensure_defaults()
         try:
             self.checkDirectory(self.output_dir,"output")
             self.checkDirectory(self.working_dir,"working")
@@ -92,7 +87,6 @@ class Analysis(Base):
 
     def _ensure_defaults(self):
         for column in self.__table__.c:
-            print column
             if getattr(self, column.name) is None and column.default is not None and column.default.is_scalar:
                 setattr(self, column.name, column.default.arg)
                 
