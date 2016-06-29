@@ -15,7 +15,8 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
 
     def setUp(self):
         self.gtffile = "../testdata/test.gtf"
-        self.gtffile = "../testdata/mm10.ucsc.ensGene.gtf"
+        self.gtffile = "i.gtf"
+ #       self.gtffile = "../testdata/mm10.ucsc.ensGene.gtf"
 
     def testGTFFile(self):
 
