@@ -57,6 +57,11 @@ class Feature(object):
         else:
             return False
 
+    def header_str(self):
+        str = "QID\tType1\tType2\tQstart\tQend\tScore\tStrand\tPhase\tHID\tHstart\tHend\tQlen\tHlen\tQseq\tHseq\tPID"
+
+ 	return str
+
     def __str__(self):
 
 	str = "%s\t%s\t%s\t%d\t%d\t%f\t%s\t%s\t%s\t%d\t%d\t%d\t%d\t%s\t%s\t%f"%(self.qid,self.type1,self.type2,self.qstart,self.qend,self.score,self.strand,self.phase,self.hid,self.hstart,self.hend,self.qlen,self.hlen,self.qseq,self.hseq,self.pid)

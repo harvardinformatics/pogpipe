@@ -39,7 +39,7 @@ class GTFFile(FileReader):
 
             self.addFeature(feat)
 
-            self.curr_line = self.nextLine(self)
+            self.curr_line = self.nextLine()
 
 
     def nextGene(self):
