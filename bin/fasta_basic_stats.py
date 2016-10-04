@@ -21,7 +21,9 @@ def main(args):
 
     seq     = ff.nextSeq()
     binsize = int(args.binsize)
-    
+    minlen  = int(args.minlen)
+
+    print minlen
     # 1. Number of sequences
     # 2. Array of lengths
     # 3. Median
@@ -32,21 +34,28 @@ def main(args):
     totlen = 0
 
     while seq is not None:
+        if seq['len']  >= minlen:
+            #print "LEN\t%d\t%d"%(minlen,seq['len'])
+            lens.append(seq['len'])
+            totlen = totlen + seq['len']
 
-        lens.append(seq['len'])
-        totlen = totlen + seq['len']
+            bin = int(seq['len']/binsize)
+            
+            if bin not in bins:
+                bins[bin] = 0
+            
+            bins[bin] = bins[bin] + 1
 
-        bin = int(seq['len']/binsize)
-        
-        if bin not in bins:
-            bins[bin] = 0
+            #pep = SeqUtils.translate(seq['seq'])
+            #pep = re.sub(r'(.{80})',r'\1\n',pep)
+            #print ">%s\n%s"%(seq['id'],pep)
 
-        bins[bin] = bins[bin] + 1
+            seqs.append(seq)
 
-        seqs.append(seq)
+        else:
+            print "MIN\t%d\t%d"%(minlen,seq['len'])
+
         seq = ff.nextSeq()
-
-    print bins
 
     sortedseqs = sorted(seqs, key = lambda k: k['len'])
 
@@ -67,13 +76,35 @@ def main(args):
         if median is None and i > seqnum/2:
             median = seq['len']
             
-        print seq['len'],seq['id']
+        #print seq['len'],seq['id']
         
         tmplen = tmplen + seq['len']
-    
+
+    i = 0
+
+    cumul    = {}
+    tmpcount = 0
+    percent  = 0
+
+    for key in sorted(bins):
+        count = bins[key]
+        tmpcount = tmpcount + count
+
+        percent = int(100*tmpcount/seqnum)
+        cumul[percent] = key*binsize
+        print tmpcount,seqnum,percent,key*binsize
+
     mean = int(totlen/seqnum)
 
     print("Num\t%d\tN50\t%d\tMedian\t%d\tMean\t%d"%(seqnum,n50,median,mean))
+
+    for key in sorted(bins):
+        value = bins[key]
+#        print("%d\t%d"%(binsize*key,value))
+
+    for key in sorted(cumul):
+        value = cumul[key]
+        print ("%d\t%d"%(key,value))
 
 if __name__ == '__main__':
 
@@ -81,6 +112,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-f','--fastafile'   , help='Input fasta file')
     parser.add_argument('-b','--binsize'     , help='Length bin size')
+    parser.add_argument('-m','--minlen'      , help='Minimum sequence len')
     
     args = parser.parse_args()
 
