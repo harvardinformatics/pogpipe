@@ -16,7 +16,7 @@ class ObjectCreateCheck(unittest.TestCase):          # Class with unitttest.Test
     def setUp(self):
         self.blatfile = "../testdata/testsmall.blat.psl"
         self.blatfile = "../testdata/mm10.over350.fastMap.psl"
-        self.blatfile = "tt.psl"
+        self.blatfile = "../genomic.psl"
 
     def testBlatFile(self):
 

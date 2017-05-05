@@ -102,20 +102,27 @@ class MummerDeltaFile():
 
                 else:
 
-                    (rstart,rend,rstrand,qstart,qend,qstrand,errors,simerrs,nonalpha) = self.parseAlignmentHeaderLine(ff)
+                    #(id2 == "13397" or id2 == "13398"):
+                    #if id1 == "10358" and (id2 == "264854" or id2 == "9742") : 
+                    #if id1 == "10358" and (id2 == "13398" or id2 == "13397") : 
+                    if id1 == "10358" and (id2 == "10359" or id2 == "10358") : 
+                        (rstart,rend,rstrand,qstart,qend,qstrand,errors,simerrs,nonalpha) = self.parseAlignmentHeaderLine(ff)
 
-                    (rseq,qseq) = self.getSequences(id1,id2)
+                        #if rstart == 121113:
+                        print "RSTART %d %d"%(rstart,rend)
+
+                        (rseq,qseq) = self.getSequences(id1,id2)
 
 
-                    (tmprseq,tmpqseq,insertpos) = self.readAlignmentChunk(fh,rstart,rend,qstart,qend,rseq,qseq,rstrand,qstrand)
+                        (tmprseq,tmpqseq,insertpos) = self.readAlignmentChunk(fh,rstart,rend,qstart,qend,rseq,qseq,rstrand,qstrand)
 
 
-                    tmpgff = self.createAlignmentGFF(id1,id2,rstart,rend,qstart,qend,rstrand,qstrand,tmprseq,tmpqseq,insertpos)
+                        tmpgff = self.createAlignmentGFF(id1,id2,rstart,rend,qstart,qend,rstrand,qstrand,tmprseq,tmpqseq,insertpos)
                 
-                    if id1 not in self.alns:
-                        self.alns[id1] = []
+                        if id1 not in self.alns:
+                            self.alns[id1] = []
 
-                    self.alns[id1].append(tmpgff)
+                        self.alns[id1].append(tmpgff)
 
             line = fh.readline()
 
@@ -124,6 +131,7 @@ class MummerDeltaFile():
 
         """  The first line lists the two original input files separated by a space."""
 
+        print fields
         self.input_file1 = fields[0]
         self.input_file2 = fields[1]
 
@@ -190,7 +198,8 @@ class MummerDeltaFile():
         return rstart,rend,rstrand,qstart,qend,qstrand,errors,simerrs,nonalpha
 
     def getSequences(self,id1,id2):
-
+        #print "Getting id1 %s from refseqs id2 %s from qseqs"%(id1,id2)
+        #print self.qryseqs.keys()
         if id1 not in self.refseqs:
             raise Exception("Can't find reference sequence [%s] in input file [%s]"%(id1,self.input_file1))
 
